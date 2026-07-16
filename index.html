@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZEUS LINKS · URL Shortener + Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a12; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #f7c948, #d4941a); border-radius: 10px; }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: #0a0a12;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== PARTICLES ===== */
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ===== AMBIENT GLOW ===== */
+        .ambient-glow {
+            position: fixed;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
+            animation: ambientPulse 6s ease-in-out infinite alternate;
+        }
+        .ambient-glow.g1 { background: #f7c948; top: -8%; left: -4%; }
+        .ambient-glow.g2 { background: #06b6d4; bottom: -8%; right: -4%; animation-delay: 3s; }
+        .ambient-glow.g3 { background: #7b2ff7; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 5s; width: 700px; height: 700px; }
+
+        @keyframes ambientPulse {
+            0% { opacity: 0.06; transform: scale(1); }
+            100% { opacity: 0.15; transform: scale(1.2); }
+        }
+
+        /* ===== PRELOADER ===== */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #0a0a12;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s, visibility 0.8s;
+        }
+        #preloader.hidden { opacity: 0; visibility: hidden; }
+        .loader-zeus {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f7c948, #fff7d6, #d4941a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(247,201,72,0.2);
+            animation: loaderPulse 1.5s ease-in-out infinite;
+            letter-spacing: 8px;
+        }
+        .loader-sub {
+            font-family: 'Rajdhani', sans-serif;
+            color: #666;
+            margin-top: 16px;
+            letter-spacing: 6px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .loader-bar {
+            margin-top: 28px;
+            width: 200px;
+            height: 3px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #f7c948, #d4941a);
+            border-radius: 10px;
+            animation: loaderFill 2s ease-in-out forwards;
+        }
+        @keyframes loaderPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        @keyframes loaderFill { 0% { width: 0%; } 100% { width: 100%; } }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10,10,18,0.7);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(247,201,72,0.06);
+            transition: all 0.4s;
+        }
+        .navbar.scrolled {
+            background: rgba(10,10,18,0.92);
+            border-bottom-color: rgba(247,201,72,0.12);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .nav-logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #f7c948, #d4941a);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            color: #0a0a12;
+            box-shadow: 0 0 20px rgba(247,201,72,0.2);
+        }
+        .nav-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #f7c948, #fff7d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-logo-text span { font-weight: 400; -webkit-text-fill-color: #777; font-size: 0.8rem; }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: #999;
+            text-decoration: none;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+            position: relative;
+            padding: 4px 0;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f7c948;
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #f7c948; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active { color: #f7c948; }
+        .nav-links a.active::after { width: 100%; }
+
+        .nav-premium-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #f7c948, #d4941a);
+            border: none;
+            border-radius: 50px;
+            color: #0a0a12;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-premium-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(247,201,72,0.3); }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .hamburger span { width: 26px; height: 2px; background: #f7c948; border-radius: 10px; transition: all 0.3s; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 22px;
+            background: rgba(247,201,72,0.06);
+            border: 1px solid rgba(247,201,72,0.12);
+            border-radius: 50px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #f7c948;
+            margin-bottom: 28px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 18px;
+            animation: fadeInUp 0.8s ease-out 0.15s both;
+        }
+        .hero h1 .gold {
+            background: linear-gradient(135deg, #f7c948, #ffd700, #f7c948);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3.5s ease-in-out infinite;
+        }
+        .hero h1 .white { color: #fff; -webkit-text-fill-color: #fff; }
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: #999;
+            max-width: 600px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+            font-weight: 300;
+        }
+
+        /* ===== SHORTENER CARD ===== */
+        .shortener-card {
+            max-width: 700px;
+            margin: 28px auto;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(247,201,72,0.08);
+            border-radius: 20px;
+            padding: 36px;
+            animation: fadeInUp 0.8s ease-out 0.45s both;
+            backdrop-filter: blur(10px);
+        }
+        .shortener-card .sc-label {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.7rem;
+            color: #f7c948;
+            margin-bottom: 16px;
+        }
+        .shortener-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .shortener-input-group input {
+            flex: 1;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .shortener-input-group input:focus { border-color: #f7c948; }
+        .shortener-input-group input::placeholder { color: #555; }
+        .shortener-input-group button {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #f7c948, #d4941a);
+            border: none;
+            border-radius: 12px;
+            color: #0a0a12;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .shortener-input-group button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(247,201,72,0.2); }
+        .shortener-input-group button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .shortener-options {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .shortener-options .opt-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .shortener-options .opt-group input {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            max-width: 150px;
+            transition: border-color 0.3s;
+        }
+        .shortener-options .opt-group input:focus { border-color: #f7c948; }
+        .shortener-options .opt-group label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .shortener-options .opt-group input[type="checkbox"] { accent-color: #f7c948; }
+
+        .result-box {
+            display: none;
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: rgba(247,201,72,0.04);
+            border: 1px solid rgba(247,201,72,0.12);
+            border-radius: 12px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            animation: fadeInUp 0.3s ease-out;
+        }
+        .result-box.show { display: flex; }
+        .result-box .rb-link {
+            color: #f7c948;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            word-break: break-all;
+            flex: 1;
+        }
+        .result-box .rb-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .result-box .rb-actions button {
+            padding: 8px 16px;
+            border: 1px solid rgba(247,201,72,0.2);
+            border-radius: 8px;
+            background: transparent;
+            color: #f7c948;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .result-box .rb-actions button:hover { background: rgba(247,201,72,0.08); }
+
+        .hero-stats {
+            display: flex;
+            gap: 50px;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        .hero-stat { text-align: center; }
+        .hero-stat .num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f7c948, #fff7d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-stat .label {
+            font-family: 'Rajdhani', sans-serif;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #444;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: bounceDown 2s ease-in-out infinite;
+        }
+        .scroll-indicator .mouse {
+            width: 22px; height: 36px;
+            border: 2px solid rgba(247,201,72,0.12);
+            border-radius: 12px;
+            position: relative;
+        }
+        .scroll-indicator .mouse::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px; height: 8px;
+            background: #f7c948;
+            border-radius: 10px;
+            animation: scrollDot 2s ease-in-out infinite;
+        }
+        @keyframes bounceDown {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+        @keyframes scrollDot {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+        }
+
+        /* ===== SECTION COMMON ===== */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 20px;
+        }
+        .section-label {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 0.75rem;
+            color: #f7c948;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        .section-sub {
+            text-align: center;
+            color: #777;
+            max-width: 500px;
+            margin: 0 auto 50px;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+        .dash-tab {
+            padding: 10px 22px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 10px;
+            color: #666;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dash-tab:hover { color: #f7c948; border-color: rgba(247,201,72,0.1); }
+        .dash-tab.active {
+            background: linear-gradient(135deg, rgba(247,201,72,0.1), rgba(212,148,26,0.06));
+            color: #f7c948;
+            border-color: rgba(247,201,72,0.15);
+        }
+
+        .dash-panel { display: none; }
+        .dash-panel.active { display: block; animation: tabFade 0.4s ease-out; }
+        @keyframes tabFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== ANALYTICS CARDS ===== */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 1100px;
+            margin: 0 auto 30px;
+        }
+        .analytics-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: all 0.4s;
+        }
+        .analytics-card:hover { border-color: rgba(247,201,72,0.08); transform: translateY(-3px); }
+        .analytics-card .ac-icon { font-size: 1.6rem; color: #f7c948; margin-bottom: 8px; }
+        .analytics-card .ac-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f7c948, #fff7d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .analytics-card .ac-label {
+            font-family: 'Rajdhani', sans-serif;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        /* ===== CHART AREA ===== */
+        .chart-container {
+            max-width: 800px;
+            margin: 24px auto;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 28px;
+        }
+        .chart-container h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: #f7c948;
+            margin-bottom: 20px;
+        }
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 160px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .bar-chart .bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .bar-chart .bar {
+            width: 100%;
+            max-width: 40px;
+            background: linear-gradient(180deg, #f7c948, rgba(247,201,72,0.3));
+            border-radius: 6px 6px 0 0;
+            transition: height 0.8s ease-out;
+            min-height: 4px;
+            cursor: pointer;
+        }
+        .bar-chart .bar:hover { opacity: 0.8; }
+        .bar-chart .bar-label {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.65rem;
+            color: #555;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+        .bar-chart .bar-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            color: #f7c948;
+            margin-bottom: 4px;
+        }
+
+        /* ===== LINKS TABLE ===== */
+        .links-table-wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.01);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .links-table-wrap h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: #f7c948;
+            padding: 20px 24px 0;
+        }
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
+            padding: 14px 24px;
+            background: rgba(247,201,72,0.03);
+            border-bottom: 1px solid rgba(247,201,72,0.05);
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
+            padding: 14px 24px;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            transition: background 0.3s;
+            font-size: 0.85rem;
+        }
+        .table-row:hover { background: rgba(247,201,72,0.02); }
+        .table-row:last-child { border-bottom: none; }
+        .table-row .tr-link { color: #f7c948; font-weight: 600; word-break: break-all; }
+        .table-row .tr-original { color: #777; font-size: 0.75rem; word-break: break-all; }
+        .table-row .tr-clicks { font-family: 'Orbitron', sans-serif; color: #fff; }
+        .table-row .tr-unique { color: #22c55e; font-family: 'Rajdhani', sans-serif; }
+        .table-row .tr-country { color: #aaa; font-family: 'Rajdhani', sans-serif; }
+        .table-row .tr-delete button {
+            background: none;
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 6px;
+            color: #ef4444;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .table-row .tr-delete button:hover { background: rgba(239,68,68,0.1); }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #555;
+        }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; color: #333; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* ===== QR CODE ===== */
+        .qr-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .qr-container #qrCanvas {
+            background: #fff;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            max-width: 200px;
+            display: inline-block;
+        }
+        .qr-container .qr-link {
+            color: #f7c948;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        /* ===== PREMIUM ===== */
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .premium-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.4s;
+        }
+        .premium-card.featured {
+            border-color: rgba(247,201,72,0.18);
+            background: rgba(247,201,72,0.02);
+            transform: scale(1.02);
+        }
+        .premium-card.featured .prem-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: linear-gradient(135deg, #f7c948, #d4941a);
+            border-radius: 50px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #0a0a12;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+        .premium-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 10px; }
+        .premium-card .price {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f7c948, #fff7d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 14px 0;
+        }
+        .premium-card .price span { font-size: 0.9rem; -webkit-text-fill-color: #666; }
+        .premium-card ul { list-style: none; text-align: left; margin: 18px 0; }
+        .premium-card ul li {
+            padding: 9px 0;
+            color: #aaa;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .premium-card ul li i { color: #f7c948; width: 18px; }
+
+        .premium-code-section {
+            max-width: 460px;
+            margin: 50px auto 0;
+            text-align: center;
+        }
+        .premium-code-section h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin-bottom: 6px; }
+        .premium-code-section p { color: #777; font-size: 0.85rem; margin-bottom: 18px; }
+        .premium-input-group {
+            display: flex;
+            gap: 10px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+        .premium-input-group input {
+            flex: 1;
+            padding: 12px 18px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: center;
+            letter-spacing: 4px;
+            font-weight: 700;
+        }
+        .premium-input-group input:focus { border-color: #f7c948; }
+        .premium-input-group input::placeholder { letter-spacing: 1px; font-weight: 400; color: #444; }
+        .premium-input-group button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #f7c948, #d4941a);
+            border: none;
+            border-radius: 12px;
+            color: #0a0a12;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .premium-input-group button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(247,201,72,0.15); }
+        .premium-code-msg { margin-top: 10px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; min-height: 22px; }
+        .premium-code-msg.success { color: #22c55e; }
+        .premium-code-msg.error { color: #ef4444; }
+
+        /* ===== CONTACT ===== */
+        .wa-banner {
+            max-width: 650px;
+            margin: 0 auto;
+            background: rgba(37,211,102,0.03);
+            border: 1px solid rgba(37,211,102,0.08);
+            border-radius: 20px;
+            padding: 36px;
+            text-align: center;
+        }
+        .wa-banner i.fa-whatsapp { font-size: 2.8rem; color: #25d366; margin-bottom: 14px; }
+        .wa-banner h3 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; margin-bottom: 6px; }
+        .wa-banner p { color: #888; margin-bottom: 20px; font-size: 0.9rem; }
+        .wa-banner .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            background: #25d366;
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .wa-banner .wa-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(37,211,102,0.25); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 36px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.02);
+        }
+        footer p { color: #333; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 2px; }
+        footer p a { color: #f7c948; text-decoration: none; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 99999;
+            padding: 14px 22px;
+            background: #12121e;
+            border: 1px solid rgba(247,201,72,0.12);
+            border-radius: 14px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 360px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { font-size: 1.1rem; }
+        .toast.success i { color: #22c55e; }
+        .toast.error i { color: #ef4444; }
+        .toast.info i { color: #f7c948; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar { padding: 12px 16px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .nav-links.open {
+                display: flex;
+                position: absolute;
+                top: 100%; left: 0; width: 100%;
+                flex-direction: column;
+                background: rgba(10,10,18,0.98);
+                padding: 20px;
+                border-bottom: 1px solid rgba(247,201,72,0.08);
+                gap: 14px;
+            }
+            .hero h1 { font-size: clamp(1.8rem, 10vw, 3rem); }
+            .hero-stats { flex-wrap: wrap; gap: 20px; }
+            section { padding: 60px 14px; }
+            .shortener-card { padding: 24px; }
+            .shortener-input-group { flex-direction: column; }
+            .shortener-options { flex-direction: column; }
+            .table-header, .table-row { grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr 0.5fr; font-size: 0.7rem; padding: 10px 14px; }
+            .premium-card.featured { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+    <div class="loader-zeus">ZEUS</div>
+    <div class="loader-sub">Link Shortener</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- PARTICLES -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- AMBIENT GLOWS -->
+<div class="ambient-glow g1"></div>
+<div class="ambient-glow g2"></div>
+<div class="ambient-glow g3"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">Z</div>
+        <div class="nav-logo-text">ZEUS <span>LINKS</span></div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#" class="active" onclick="switchDash('overview',this);closeNav();return false;"><i class="fas fa-chart-pie"></i> Overview</a></li>
+        <li><a href="#" onclick="switchDash('links',this);closeNav();return false;"><i class="fas fa-link"></i> My Links</a></li>
+        <li><a href="#" onclick="switchDash('qr',this);closeNav();return false;"><i class="fas fa-qrcode"></i> QR Codes</a></li>
+        <li><a href="#" onclick="switchDash('premium',this);closeNav();return false;"><i class="fas fa-crown"></i> Premium</a></li>
+        <li><a href="#" onclick="switchDash('contact',this);closeNav();return false;"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+    <button class="nav-premium-btn" onclick="switchDash('premium');closeNav();"><i class="fas fa-crown"></i> Upgrade</button>
+    <div class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+    </div>
+</nav>
+
+<!-- HERO + SHORTENER -->
+<section class="hero" id="hero">
+    <div class="hero-badge"><i class="fas fa-bolt"></i> Premium URL Shortener + Real-Time Analytics</div>
+    <h1 class="glow-text">
+        <span class="gold">SHORTEN.</span><br>
+        <span class="white">TRACK. <span class="gold">DOMINATE.</span></span>
+    </h1>
+    <p>Shorten your links, track every click in real-time, generate QR codes, and get deep analytics — all in one place.</p>
+
+    <!-- SHORTENER CARD -->
+    <div class="shortener-card">
+        <div class="sc-label"><i class="fas fa-bolt"></i> Shorten a link</div>
+        <div class="shortener-input-group">
+            <input type="url" id="urlInput" placeholder="Paste your long URL here..." autocomplete="off">
+            <button id="shortenBtn" onclick="shortenLink()"><i class="fas fa-scissors"></i> Shorten</button>
+        </div>
+        <div class="shortener-options">
+            <div class="opt-group">
+                <label><input type="checkbox" id="customSlugCheck" onchange="toggleCustomSlug()"> Custom alias</label>
+                <input type="text" id="customSlugInput" placeholder="my-custom-link" disabled style="display:none;">
+            </div>
+            <div class="opt-group">
+                <label><input type="checkbox" id="generateQr" checked> Generate QR Code</label>
+            </div>
+        </div>
+        <div class="result-box" id="resultBox">
+            <span class="rb-link" id="resultLink">zeus.link/abc123</span>
+            <div class="rb-actions">
+                <button onclick="copyResult()"><i class="fas fa-copy"></i> Copy</button>
+                <button onclick="openResult()"><i class="fas fa-external-link-alt"></i> Open</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-stats">
+        <div class="hero-stat"><div class="num" id="totalLinksStat">0</div><div class="label">Links Created</div></div>
+        <div class="hero-stat"><div class="num" id="totalClicksStat">0</div><div class="label">Total Clicks</div></div>
+        <div class="hero-stat"><div class="num" id="uniqueVisitorsStat">0</div><div class="label">Unique Visitors</div></div>
+        <div class="hero-stat"><div class="num" id="activeLinksStat">0</div><div class="label">Active Links</div></div>
+    </div>
+    <div class="scroll-indicator">
+        <div class="mouse"></div>
+        <span>Scroll</span>
+    </div>
+</section>
+
+<!-- DASHBOARD SECTION -->
+<section id="dashSection">
+    <div class="section-label">Analytics Dashboard</div>
+    <h2 class="section-title glow-text">Your <span style="color:#f7c948;">Link Intelligence</span></h2>
+    <p class="section-sub">Monitor performance, track clicks by region, and optimize your campaigns.</p>
+
+    <!-- DASHBOARD TABS -->
+    <div class="dashboard-tabs">
+        <button class="dash-tab active" data-panel="overview" onclick="switchDash('overview')"><i class="fas fa-chart-pie"></i> Overview</button>
+        <button class="dash-tab" data-panel="links" onclick="switchDash('links')"><i class="fas fa-link"></i> My Links</button>
+        <button class="dash-tab" data-panel="qr" onclick="switchDash('qr')"><i class="fas fa-qrcode"></i> QR Codes</button>
+        <button class="dash-tab" data-panel="premium" onclick="switchDash('premium')"><i class="fas fa-crown"></i> Premium</button>
+        <button class="dash-tab" data-panel="contact" onclick="switchDash('contact')"><i class="fas fa-envelope"></i> Contact</button>
+    </div>
+
+    <!-- PANEL: OVERVIEW -->
+    <div class="dash-panel active" id="panel-overview">
+        <div class="analytics-grid" id="overviewCards">
+            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-link"></i></div><div class="ac-num" id="ovTotalLinks">0</div><div class="ac-label">Total Links</div></div>
+            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-mouse-pointer"></i></div><div class="ac-num" id="ovTotalClicks">0</div><div class="ac-label">Total Clicks</div></div>
+            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-users"></i></div><div class="ac-num" id="ovUnique">0</div><div class="ac-label">Unique Visitors</div></div>
+            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-globe"></i></div><div class="ac-num" id="ovCountries">0</div><div class="ac-label">Countries</div></div>
+            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-chart-line"></i></div><div class="ac-num" id="ovCTR">0%</div><div class="ac-label">Click Rate</div></div>
+        </div>
+
+        <div class="chart-container">
+            <h3><i class="fas fa-calendar-alt"></i> Clicks This Week</h3>
+            <div class="bar-chart" id="weeklyChart"></div>
+        </div>
+    </div>
+
+    <!-- PANEL: MY LINKS -->
+    <div class="dash-panel" id="panel-links">
+        <div class="links-table-wrap">
+            <h3><i class="fas fa-list"></i> All Shortened Links</h3>
+            <div class="table-header">
+                <span>Short Link</span>
+                <span>Original URL</span>
+                <span>Clicks</span>
+                <span>Unique</span>
+                <span>Country</span>
+                <span>Action</span>
+            </div>
+            <div id="linksTableBody">
+                <div class="empty-state">
+                    <i class="fas fa-link"></i>
+                    <p>No links yet. Shorten your first link above!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL: QR CODES -->
+    <div class="dash-panel" id="panel-qr">
+        <div class="links-table-wrap">
+            <h3><i class="fas fa-qrcode"></i> Your QR Codes</h3>
+            <div id="qrListBody">
+                <div class="empty-state">
+                    <i class="fas fa-qrcode"></i>
+                    <p>No QR codes generated yet. Shorten a link with QR generation enabled.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL: PREMIUM -->
+    <div class="dash-panel" id="panel-premium">
+        <div class="premium-grid">
+            <div class="premium-card">
+                <h3>Free</h3>
+                <div class="price">$0 <span>/ forever</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i> 10 Links per Month</li>
+                    <li><i class="fas fa-check"></i> Basic Click Counts</li>
+                    <li><i class="fas fa-check"></i> QR Code Generation</li>
+                    <li><i class="fas fa-times" style="color:#555;"></i> Custom Aliases</li>
+                    <li><i class="fas fa-times" style="color:#555;"></i> Country Analytics</li>
+                    <li><i class="fas fa-times" style="color:#555;"></i> Device Breakdown</li>
+                </ul>
+            </div>
+            <div class="premium-card featured">
+                <div class="prem-badge"><i class="fas fa-crown"></i> BEST VALUE</div>
+                <h3>Premium</h3>
+                <div class="price">$1 <span>/ once</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i> Unlimited Links</li>
+                    <li><i class="fas fa-check"></i> Real-Time Analytics</li>
+                    <li><i class="fas fa-check"></i> Custom Aliases</li>
+                    <li><i class="fas fa-check"></i> Country + Device Data</li>
+                    <li><i class="fas fa-check"></i> Click Heatmap</li>
+                    <li><i class="fas fa-check"></i> CSV Export</li>
+                    <li><i class="fas fa-check"></i> No Ads</li>
+                </ul>
+            </div>
+            <div class="premium-card">
+                <h3>Business</h3>
+                <div class="price">$5 <span>/ once</span></div>
+                <ul>
+                    <li><i class="fas fa-check"></i> Everything in Premium</li>
+                    <li><i class="fas fa-check"></i> Custom Domain</li>
+                    <li><i class="fas fa-check"></i> Team Access (5 users)</li>
+                    <li><i class="fas fa-check"></i> API Access</li>
+                    <li><i class="fas fa-check"></i> Advanced Filters</li>
+                    <li><i class="fas fa-check"></i> Priority Support</li>
+                    <li><i class="fas fa-check"></i> Lifetime Updates</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="premium-code-section">
+            <h3><i class="fas fa-key" style="color:#f7c948;"></i> Unlock with Code</h3>
+            <p>Enter your premium code or contact Zeus to get one.</p>
+            <div class="premium-input-group">
+                <input type="text" id="premiumCodeInput" placeholder="Enter Code" maxlength="10" autocomplete="off">
+                <button onclick="redeemPremiumCode()"><i class="fas fa-unlock"></i> Unlock</button>
+            </div>
+            <div class="premium-code-msg" id="premiumCodeMsg"></div>
+        </div>
+    </div>
+
+    <!-- PANEL: CONTACT -->
+    <div class="dash-panel" id="panel-contact">
+        <div class="wa-banner">
+            <i class="fab fa-whatsapp"></i>
+            <h3>Chat with Zeus</h3>
+            <p>Contact the owner directly for premium codes, support, or custom domain setup.</p>
+            <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20ZEUS%20LINKS%20Premium%20%F0%9F%94%97" target="_blank" class="wa-btn">
+                <i class="fab fa-whatsapp"></i> Message Zeus
+            </a>
+            <p style="margin-top:14px;font-size:0.75rem;color:#555;">Owner: Zeus · +234 906 676 0078</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 <a href="#">ZEUS LINKS</a> · Built by Zeus · URL Shortener + Analytics</p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-info-circle"></i>
+    <span id="toastMsg">Hello!</span>
+</div>
+
+<script>
+    // ========================
+    // STATE
+    // ========================
+    let premiumUnlocked = localStorage.getItem('zeusPremium') === 'true';
+    let savedLinks = JSON.parse(localStorage.getItem('zeusLinks') || '[]');
+    let clickData = JSON.parse(localStorage.getItem('zeusClickData') || '{}');
+
+    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const COUNTRIES = ['USA','Nigeria','UK','Canada','Germany','India','Brazil','Australia','France','Japan'];
+    const DEVICES = ['Mobile','Desktop','Tablet'];
+
+    // ========================
+    // PARTICLES
+    // ========================
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas();
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2.5 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.4;
+            this.speedY = (Math.random() - 0.5) * 0.4;
+            this.opacity = Math.random() * 0.4 + 0.1;
+            this.color = Math.random() > 0.7 ? '#f7c948' : '#ffffff';
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.opacity;
+            ctx.fill();
+        }
+    }
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let p of particles) { p.update(); p.draw(); }
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(247,201,72,0.03)';
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    window.addEventListener('resize', resizeCanvas);
+
+    // ========================
+    // PRELOADER
+    // ========================
+    window.addEventListener('load', () => {
+        setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 2000);
+    });
+
+    // ========================
+    // NAV
+    // ========================
+    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+    function closeNav() { document.getElementById('navLinks').classList.remove('open'); }
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if (window.scrollY > 80) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // ========================
+    // DASHBOARD SWITCH
+    // ========================
+    function switchDash(panel, el) {
+        document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('panel-' + panel).classList.add('active');
+        document.querySelectorAll(`.dash-tab[data-panel="${panel}"]`).forEach(t => t.classList.add('active'));
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        if (el) el.classList.add('active');
+
+        if (panel === 'overview') updateOverview();
+        if (panel === 'links') renderLinksTable();
+        if (panel === 'qr') renderQRList();
+
+        document.getElementById('dashSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ========================
+    // TOGGLE CUSTOM SLUG
+    // ========================
+    function toggleCustomSlug() {
+        const checked = document.getElementById('customSlugCheck').checked;
+        const input = document.getElementById('customSlugInput');
+        input.style.display = checked ? 'block' : 'none';
+        input.disabled = !checked;
+    }
+
+    // ========================
+    // SHORTEN LINK ENGINE
+    // ========================
+    function generateSlug() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let slug = '';
+        for (let i = 0; i < 6; i++) slug += chars.charAt(Math.floor(Math.random() * chars.length));
+        return slug;
+    }
+
+    function shortenLink() {
+        const urlInput = document.getElementById('urlInput');
+        const btn = document.getElementById('shortenBtn');
+        let url = urlInput.value.trim();
+
+        if (!url) {
+            showToast('Please enter a URL to shorten.', 'error');
+            return;
+        }
+
+        // Add https if missing
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+        }
+
+        // Validate
+        try { new URL(url); } catch(e) {
+            showToast('Invalid URL. Please enter a valid link.', 'error');
+            return;
+        }
+
+        // Check premium for custom slug
+        const useCustomSlug = document.getElementById('customSlugCheck').checked;
+        let slug = generateSlug();
+
+        if (useCustomSlug) {
+            if (!premiumUnlocked) {
+                showToast('Custom aliases are a Premium feature. Upgrade to use!', 'error');
+                switchDash('premium');
+                return;
+            }
+            const customSlug = document.getElementById('customSlugInput').value.trim();
+            if (!customSlug) {
+                showToast('Please enter a custom alias.', 'error');
+                return;
+            }
+            if (savedLinks.find(l => l.slug === customSlug)) {
+                showToast('This alias is already taken. Choose another.', 'error');
+                return;
+            }
+            slug = customSlug;
+        }
+
+        // Check monthly limit for free
+        if (!premiumUnlocked) {
+            const thisMonth = savedLinks.filter(l => {
+                const d = new Date(l.created);
+                const now = new Date();
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            }).length;
+            if (thisMonth >= 10) {
+                showToast('Free tier: 10 links/month. Upgrade for unlimited!', 'error');
+                switchDash('premium');
+                return;
+            }
+        }
+
+        // Simulate country & device
+        const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+        const device = DEVICES[Math.floor(Math.random() * DEVICES.length)];
+
+        // Create link
+        const link = {
+            id: Date.now(),
+            slug: slug,
+            original: url,
+            short: 'zeus.link/' + slug,
+            created: new Date().toISOString(),
+            clicks: 0,
+            unique: 0,
+            country: country,
+            device: device,
+            qr: document.getElementById('generateQr').checked
+        };
+
+        savedLinks.unshift(link);
+        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
+
+        // Show result
+        const resultBox = document.getElementById('resultBox');
+        const resultLink = document.getElementById('resultLink');
+        resultLink.textContent = 'zeus.link/' + slug;
+        resultBox.classList.add('show');
+
+        // Update stats
+        updateHeroStats();
+        updateOverview();
+        renderLinksTable();
+        renderQRList();
+
+        showToast('Link shortened! Copy it now.', 'success');
+        btn.disabled = true;
+        setTimeout(() => btn.disabled = false, 1000);
+    }
+
+    // ========================
+    // ENTER KEY SUPPORT
+    // ========================
+    document.getElementById('urlInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') shortenLink();
+    });
+
+    // ========================
+    // RESULT ACTIONS
+    // ========================
+    function copyResult() {
+        const text = document.getElementById('resultLink').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Copied to clipboard!', 'success');
+        }).catch(() => {
+            // Fallback
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('Copied!', 'success');
+        });
+    }
+
+    function openResult() {
+        window.open('https://' + document.getElementById('resultLink').textContent, '_blank');
+    }
+
+    // ========================
+    // SIMULATE CLICK (for demo)
+    // ========================
+    function simulateClick(slug) {
+        if (!premiumUnlocked) return;
+        const link = savedLinks.find(l => l.slug === slug);
+        if (!link) return;
+
+        link.clicks++;
+        link.unique = Math.min(link.unique + Math.random() > 0.3 ? 1 : 0, link.clicks);
+
+        // Track by day for chart
+        const today = DAYS[new Date().getDay()];
+        if (!clickData[today]) clickData[today] = 0;
+        clickData[today] = (clickData[today] || 0) + 1;
+        localStorage.setItem('zeusClickData', JSON.stringify(clickData));
+        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
+
+        updateHeroStats();
+        updateOverview();
+        renderLinksTable();
+        renderChart();
+    }
+
+    // ========================
+    // HERO STATS
+    // ========================
+    function updateHeroStats() {
+        const total = savedLinks.length;
+        const clicks = savedLinks.reduce((sum, l) => sum + l.clicks, 0);
+        const unique = savedLinks.reduce((sum, l) => sum + l.unique, 0);
+        const active = savedLinks.filter(l => l.clicks > 0).length;
+
+        document.getElementById('totalLinksStat').textContent = total;
+        document.getElementById('totalClicksStat').textContent = clicks;
+        document.getElementById('uniqueVisitorsStat').textContent = unique;
+        document.getElementById('activeLinksStat').textContent = active;
+    }
+
+    // ========================
+    // OVERVIEW
+    // ========================
+    function updateOverview() {
+        const total = savedLinks.length;
+        const clicks = savedLinks.reduce((sum, l) => sum + l.clicks, 0);
+        const unique = savedLinks.reduce((sum, l) => sum + l.unique, 0);
+        const countries = new Set(savedLinks.map(l => l.country)).size;
+        const ctr = clicks > 0 ? Math.round((unique / clicks) * 100) : 0;
+
+        document.getElementById('ovTotalLinks').textContent = total;
+        document.getElementById('ovTotalClicks').textContent = clicks;
+        document.getElementById('ovUnique').textContent = unique;
+        document.getElementById('ovCountries').textContent = countries;
+        document.getElementById('ovCTR').textContent = ctr + '%';
+
+        renderChart();
+    }
+
+    // ========================
+    // WEEKLY CHART
+    // ========================
+    function renderChart() {
+        const container = document.getElementById('weeklyChart');
+        if (!container) return;
+
+        // Build chart data
+        const today = new Date().getDay();
+        const dayNames = [];
+        for (let i = 6; i >= 0; i--) {
+            dayNames.push(DAYS[(today - i + 7) % 7]);
+        }
+
+        let maxVal = 0;
+        const vals = dayNames.map(d => {
+            const v = clickData[d] || 0;
+            if (v > maxVal) maxVal = v;
+            return v;
+        });
+        if (maxVal === 0) maxVal = 1;
+
+        let html = '';
+        dayNames.forEach((d, i) => {
+            const h = Math.max(4, (vals[i] / maxVal) * 130);
+            html += `<div class="bar-wrap">
+                <div class="bar-value">${vals[i]}</div>
+                <div class="bar" style="height:${h}px;" onclick="showToast('${d}: ${vals[i]} clicks','info')"></div>
+                <div class="bar-label">${d.slice(0,3)}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    // ========================
+    // LINKS TABLE
+    // ========================
+    function renderLinksTable() {
+        const body = document.getElementById('linksTableBody');
+        if (savedLinks.length === 0) {
+            body.innerHTML = `<div class="empty-state"><i class="fas fa-link"></i><p>No links yet. Shorten your first link above!</p></div>`;
+            return;
+        }
+
+        let html = '';
+        savedLinks.forEach(link => {
+            html += `<div class="table-row">
+                <div class="tr-link">zeus.link/${link.slug}</div>
+                <div class="tr-original" title="${link.original}">${link.original.length > 35 ? link.original.slice(0,35) + '...' : link.original}</div>
+                <div class="tr-clicks">${link.clicks}</div>
+                <div class="tr-unique">${link.unique}</div>
+                <div class="tr-country">${link.country}</div>
+                <div class="tr-delete">
+                    <button onclick="deleteLink(${link.id})"><i class="fas fa-trash"></i></button>
+                    <button onclick="simulateClick('${link.slug}')" title="Simulate Click" style="border-color:rgba(247,201,72,0.2);color:#f7c948;margin-left:4px;"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>`;
+        });
+        body.innerHTML = html;
+    }
+
+    function deleteLink(id) {
+        savedLinks = savedLinks.filter(l => l.id !== id);
+        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
+        updateHeroStats();
+        updateOverview();
+        renderLinksTable();
+        renderQRList();
+        showToast('Link deleted.', 'info');
+    }
+
+    // ========================
+    // QR CODES
+    // ========================
+    function renderQRList() {
+        const body = document.getElementById('qrListBody');
+        const qrLinks = savedLinks.filter(l => l.qr);
+
+        if (qrLinks.length === 0) {
+            body.innerHTML = `<div class="empty-state"><i class="fas fa-qrcode"></i><p>No QR codes yet. Shorten a link with QR generation enabled.</p></div>`;
+            return;
+        }
+
+        let html = '';
+        qrLinks.forEach(link => {
+            const qrUrl = 'https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=' + encodeURIComponent('https://zeus.link/' + link.slug) + '&choe=UTF-8';
+            html += `<div class="table-row">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <img src="${qrUrl}" alt="QR" style="width:50px;height:50px;border-radius:8px;background:#fff;padding:4px;">
+                    <span class="tr-link">zeus.link/${link.slug}</span>
+                </div>
+                <div class="tr-original" title="${link.original}">${link.original.length > 30 ? link.original.slice(0,30) + '...' : link.original}</div>
+                <div class="tr-clicks">${link.clicks}</div>
+                <div class="tr-unique">${link.unique}</div>
+                <div colspan="2" style="display:flex;gap:6px;">
+                    <button onclick="window.open('${qrUrl}', '_blank')" style="background:none;border:1px solid rgba(247,201,72,0.2);border-radius:6px;color:#f7c948;padding:4px 10px;font-size:0.7rem;cursor:pointer;">Download</button>
+                    <button onclick="deleteLink(${link.id})" style="background:none;border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#ef4444;padding:4px 10px;font-size:0.7rem;cursor:pointer;"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>`;
+        });
+        body.innerHTML = html;
+    }
+
+    // ========================
+    // PREMIUM
+    // ========================
+    function redeemPremiumCode() {
+        const input = document.getElementById('premiumCodeInput');
+        const msg = document.getElementById('premiumCodeMsg');
+        const code = input.value.trim();
+
+        if (code === '123000') {
+            premiumUnlocked = true;
+            localStorage.setItem('zeusPremium', 'true');
+            msg.className = 'premium-code-msg success';
+            msg.innerHTML = '<i class="fas fa-check-circle"></i> Premium Unlocked! Unlimited links, custom aliases & full analytics.';
+            showToast('🎉 ZEUS LINKS Premium Activated!', 'success');
+            input.value = '';
+            updateHeroStats();
+            updateOverview();
+            renderLinksTable();
+            renderQRList();
+            setTimeout(() => msg.innerHTML = '', 5000);
+        } else if (code === '') {
+            msg.className = 'premium-code-msg error';
+            msg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a premium code.';
+        } else {
+            msg.className = 'premium-code-msg error';
+            msg.innerHTML = '<i class="fas fa-times-circle"></i> Invalid code. Contact Zeus on WhatsApp.';
+        }
+        setTimeout(() => { if (!msg.classList.contains('success')) msg.innerHTML = ''; }, 4000);
+    }
+
+    document.getElementById('premiumCodeInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') redeemPremiumCode();
+    });
+
+    // ========================
+    // TOAST
+    // ========================
+    function showToast(msg, type = 'info') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.className = `toast ${type}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    // ========================
+    // DEMO SEED DATA
+    // ========================
+    function seedDemoData() {
+        if (savedLinks.length === 0) {
+            const now = new Date();
+            const sampleLinks = [
+                { original: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', slug: 'abc123', country: 'USA', device: 'Mobile' },
+                { original: 'https://github.com/zeus/awesome-project', slug: 'github1', country: 'Nigeria', device: 'Desktop' },
+                { original: 'https://www.instagram.com/p/example', slug: 'insta99', country: 'UK', device: 'Mobile' },
+                { original: 'https://twitter.com/zeus/status/12345', slug: 'twt123', country: 'Canada', device: 'Desktop' }
+            ];
+
+            sampleLinks.forEach((s, i) => {
+                const clicks = Math.floor(Math.random() * 15) + 3;
+                const unique = Math.floor(clicks * (0.5 + Math.random() * 0.3));
+                const link = {
+                    id: Date.now() + i,
+                    slug: s.slug,
+                    original: s.original,
+                    short: 'zeus.link/' + s.slug,
+                    created: new Date(now.getTime() - i * 86400000).toISOString(),
+                    clicks: clicks,
+                    unique: unique,
+                    country: s.country,
+                    device: s.device,
+                    qr: true
+                };
+                savedLinks.push(link);
+            });
+            localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
+
+            // Seed weekly data
+            DAYS.forEach(d => {
+                clickData[d] = Math.floor(Math.random() * 8) + 1;
+            });
+            localStorage.setItem('zeusClickData', JSON.stringify(clickData));
+        }
+    }
+
+    seedDemoData();
+
+    // ========================
+    // INIT
+    // ========================
+    updateHeroStats();
+    updateOverview();
+    renderLinksTable();
+    renderQRList();
+
+    console.log('%c🔗 ZEUS LINKS ACTIVATED', 'font-size:28px;font-weight:bold;color:#f7c948;');
+    console.log('%cPremium Code: 123000', 'font-size:16px;color:#888;');
+    console.log('%cOwner: Zeus | +234 906 676 0078', 'font-size:14px;color:#aaa;');
+</script>
+</body>
+</html>
