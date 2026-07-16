@@ -3,1118 +3,2141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Z-URL · Deploy & Host from GitHub</title>
+  <title>Zeus Cloud · Deploy & Scale Like a God</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚡</text></svg>">
   <style>
+    /* ============================================================
+       ZEUS CLOUD — Premium Hosting Platform
+       Complete Render.com Clone with Superior Features
+       ============================================================ */
+    :root {
+      --bg-primary: #0b0b12;
+      --bg-secondary: #111120;
+      --bg-card: #16162a;
+      --bg-hover: #1c1c36;
+      --bg-input: #0d0d1a;
+      --border: #252545;
+      --border-hover: #3a3a6a;
+      --text-primary: #f0f0f5;
+      --text-secondary: #9494b8;
+      --text-muted: #6666aa;
+      --accent: #7c3aed;
+      --accent-hover: #8b5cf6;
+      --accent-glow: rgba(124, 58, 237, 0.25);
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --gold: #fbbf24;
+      --sidebar-width: 260px;
+      --topbar-height: 60px;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 32px rgba(0,0,0,0.4);
+      --shadow-glow: 0 0 40px rgba(124, 58, 237, 0.15);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: #0a0a0f;
-      color: #e0e0e0;
+      font-family: var(--font);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
+      overflow-x: hidden;
     }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #12121a; }
-    ::-webkit-scrollbar-thumb { background: #3a3a5c; border-radius: 4px; }
-    a { color: #7c7cff; text-decoration: none; }
-    a:hover { color: #a0a0ff; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+    a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--accent-hover); }
+    img { max-width: 100%; }
 
-    /* Navigation */
-    .navbar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 32px; background: #0e0e18; border-bottom: 1px solid #1e1e30;
-      position: sticky; top: 0; z-index: 100;
+    /* ==================== BUTTONS ==================== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: var(--radius-sm);
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s;
+      text-decoration: none; white-space: nowrap;
     }
-    .navbar .logo {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 24px; font-weight: 800; color: #fff;
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #6d28d9);
+      color: #fff; box-shadow: 0 4px 16px var(--accent-glow);
     }
-    .navbar .logo span { color: #7c7cff; }
-    .navbar .logo small { font-size: 12px; font-weight: 400; color: #888; margin-left: 4px; }
-    .nav-links { display: flex; gap: 24px; align-items: center; }
-    .nav-links a { color: #aaa; font-size: 14px; font-weight: 500; transition: color 0.2s; }
-    .nav-links a:hover { color: #fff; }
-    .nav-links .btn { padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
-    .btn-primary { background: #7c7cff; color: #fff !important; border: none; }
-    .btn-primary:hover { background: #6a6aff; }
-    .btn-outline { background: transparent; border: 1.5px solid #3a3a5c; color: #ccc !important; }
-    .btn-outline:hover { border-color: #7c7cff; color: #fff !important; }
-    .btn-success { background: #22c55e; color: #fff !important; border: none; }
-    .btn-success:hover { background: #16a34a; }
-    .btn-danger { background: #ef4444; color: #fff !important; border: none; }
-    .btn-danger:hover { background: #dc2626; }
-    .btn-warning { background: #f59e0b; color: #000 !important; border: none; }
-    .btn-warning:hover { background: #d97706; }
-    .btn-sm { padding: 6px 14px; font-size: 13px; }
-
-    /* Hero */
-    .hero {
-      text-align: center; padding: 80px 20px 60px;
-      background: linear-gradient(180deg, #0e0e18 0%, #0a0a0f 100%);
+    .btn-primary:hover { box-shadow: 0 6px 24px var(--accent-glow); color: #fff; }
+    .btn-secondary {
+      background: var(--bg-card); color: var(--text-primary);
+      border: 1px solid var(--border);
     }
-    .hero h1 { font-size: 52px; font-weight: 900; margin-bottom: 16px; background: linear-gradient(135deg, #7c7cff, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { font-size: 20px; color: #888; max-width: 640px; margin: 0 auto 32px; }
-    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .hero-buttons .btn { padding: 14px 32px; font-size: 16px; border-radius: 10px; }
-
-    /* Container */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-    /* Sections */
-    .section { padding: 60px 0; }
-    .section-title { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 40px; }
-    .section-subtitle { text-align: center; color: #888; margin-bottom: 48px; font-size: 16px; }
-
-    /* Cards */
-    .card {
-      background: #12121a; border: 1px solid #1e1e30; border-radius: 16px;
-      padding: 32px; transition: all 0.3s;
+    .btn-secondary:hover { border-color: var(--accent); background: var(--bg-hover); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #16a34a; color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #dc2626; color: #fff; }
+    .btn-warning { background: var(--gold); color: #000; }
+    .btn-warning:hover { background: #f59e0b; color: #000; }
+    .btn-ghost {
+      background: transparent; color: var(--text-secondary);
+      border: 1px solid transparent;
     }
-    .card:hover { border-color: #3a3a5c; box-shadow: 0 4px 24px rgba(124, 124, 255, 0.08); }
-    .card h3 { font-size: 20px; margin-bottom: 12px; color: #fff; }
-    .card p { color: #888; font-size: 14px; }
+    .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .btn-lg { padding: 14px 32px; font-size: 16px; border-radius: var(--radius); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+    .btn-xl { padding: 18px 40px; font-size: 18px; border-radius: var(--radius); }
+    .btn-block { width: 100%; justify-content: center; }
+    .btn-icon { width: 36px; height: 36px; padding: 0; justify-content: center; border-radius: var(--radius-sm); }
 
-    /* Grid */
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-
-    /* Features */
-    .feature-card { text-align: center; }
-    .feature-card .icon { font-size: 36px; margin-bottom: 16px; }
-    .feature-card h3 { font-size: 18px; }
-
-    /* Steps */
-    .step-card { display: flex; gap: 20px; align-items: flex-start; counter-increment: step; }
-    .step-card .num {
-      font-size: 28px; font-weight: 900; color: #7c7cff; min-width: 48px;
-      background: rgba(124, 124, 255, 0.1); height: 48px; display: flex; align-items: center; justify-content: center;
-      border-radius: 12px;
+    /* ==================== INPUTS ==================== */
+    .input {
+      width: 100%; padding: 12px 16px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text-primary);
+      font-family: var(--font); font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-
-    /* Pricing */
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 40px; }
-    .pricing-card {
-      background: #12121a; border: 1px solid #1e1e30; border-radius: 16px;
-      padding: 32px; text-align: center; position: relative; transition: all 0.3s;
-    }
-    .pricing-card.featured { border-color: #7c7cff; box-shadow: 0 0 32px rgba(124, 124, 255, 0.15); }
-    .pricing-card .badge {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: #7c7cff; color: #fff; padding: 4px 16px; border-radius: 20px;
-      font-size: 12px; font-weight: 700; text-transform: uppercase;
-    }
-    .pricing-card .price { font-size: 42px; font-weight: 900; color: #fff; margin: 16px 0 8px; }
-    .pricing-card .price span { font-size: 16px; color: #888; font-weight: 400; }
-    .pricing-card .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
-    .pricing-card ul { list-style: none; text-align: left; margin: 24px 0; }
-    .pricing-card ul li { padding: 8px 0; font-size: 14px; color: #bbb; display: flex; align-items: center; gap: 10px; }
-    .pricing-card ul li::before { content: "✓"; color: #22c55e; font-weight: 700; }
-
-    /* Deploy Form */
-    .deploy-section {
-      background: linear-gradient(135deg, #0e0e18 0%, #14142a 100%);
-      border-radius: 20px; padding: 48px; margin: 40px 0; border: 1px solid #1e1e30;
-    }
-    .deploy-section h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-    .deploy-section .desc { color: #888; margin-bottom: 32px; }
+    .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .input::placeholder { color: var(--text-muted); }
+    .input-mono { font-family: var(--font-mono); font-size: 13px; }
+    .input-error { border-color: var(--danger); }
+    .input-error:focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
     .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 14px; font-weight: 600; color: #bbb; margin-bottom: 6px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 12px 16px; background: #0a0a0f; border: 1px solid #2a2a40;
-      border-radius: 10px; color: #fff; font-size: 14px; transition: border-color 0.2s;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      outline: none; border-color: #7c7cff; box-shadow: 0 0 0 3px rgba(124, 124, 255, 0.15);
-    }
-    .form-group select { cursor: pointer; }
-    .form-group .hint { font-size: 12px; color: #666; margin-top: 4px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    select.input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239494b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+    textarea.input { resize: vertical; min-height: 100px; font-family: var(--font-mono); }
 
-    /* Tabs */
-    .tabs { display: flex; gap: 4px; margin-bottom: 32px; background: #0a0a0f; border-radius: 12px; padding: 4px; max-width: fit-content; }
-    .tab { padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #888; cursor: pointer; transition: all 0.2s; border: none; background: none; }
-    .tab.active { background: #1e1e30; color: #fff; }
+    /* ==================== CARDS ==================== */
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      transition: all 0.3s;
+    }
+    .card:hover { border-color: var(--border-hover); }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+    }
+    .card-header h3 { font-size: 15px; font-weight: 600; }
+    .card-body { padding: 24px; }
 
-    /* Dashboard */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: #12121a; border: 1px solid #1e1e30; border-radius: 12px; padding: 20px; }
-    .stat-card .stat-value { font-size: 28px; font-weight: 800; color: #fff; }
-    .stat-card .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
-    .stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
+    /* ==================== LANDING PAGE ==================== */
+    #view-landing {
+      min-height: 100vh; background: var(--bg-primary);
+    }
+    .landing-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 40px; position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100; background: rgba(11, 11, 18, 0.85);
+      backdrop-filter: blur(16px); border-bottom: 1px solid rgba(37, 37, 69, 0.5);
+    }
+    .landing-nav .logo {
+      font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px;
+    }
+    .landing-nav .logo .bolt { color: var(--gold); }
+    .landing-nav .logo span { color: var(--text-secondary); font-weight: 400; font-size: 14px; }
+    .landing-nav .nav-links { display: flex; gap: 28px; align-items: center; }
+    .landing-nav .nav-links a { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+    .landing-nav .nav-links a:hover { color: var(--text-primary); }
+    .hero-section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 20px 80px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 100%, rgba(34, 197, 94, 0.04) 0%, transparent 50%);
+    }
+    .hero-section .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      background: rgba(124, 58, 237, 0.12); border: 1px solid rgba(124, 58, 237, 0.25);
+      color: var(--accent); font-size: 13px; font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero-section h1 {
+      font-size: clamp(40px, 8vw, 80px); font-weight: 900;
+      line-height: 1.1; margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-section .subtitle {
+      font-size: clamp(16px, 2vw, 22px); color: var(--text-secondary);
+      max-width: 640px; margin: 0 auto 36px;
+    }
+    .hero-section .stats-row {
+      display: flex; gap: 48px; margin-top: 48px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .hero-section .stat-item { text-align: center; }
+    .hero-section .stat-item .num {
+      font-size: 36px; font-weight: 900; color: var(--text-primary);
+    }
+    .hero-section .stat-item .label {
+      font-size: 13px; color: var(--text-muted); margin-top: 4px;
+    }
+    .trust-bar {
+      display: flex; gap: 40px; justify-content: center; align-items: center;
+      padding: 40px; flex-wrap: wrap; opacity: 0.4;
+      border-top: 1px solid var(--border); margin-top: 60px;
+    }
+    .trust-bar span { font-size: 14px; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; }
 
-    /* Table */
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    thead th { text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; color: #666; border-bottom: 1px solid #1e1e30; }
-    tbody td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #151520; }
-    tbody tr:hover { background: rgba(124, 124, 255, 0.03); }
-    .status-running { color: #22c55e; display: flex; align-items: center; gap: 6px; }
-    .status-running::before { content: ""; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
-    .status-building { color: #f59e0b; display: flex; align-items: center; gap: 6px; }
-    .status-building::before { content: ""; width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-    .status-failed { color: #ef4444; display: flex; align-items: gap: 6px; }
-    .status-failed::before { content: ""; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; }
+    /* Feature Grid Landing */
+    .feature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 20px;
+    }
+    .feature-card-landing {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      transition: all 0.3s;
+    }
+    .feature-card-landing:hover {
+      border-color: var(--accent); transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.1);
+    }
+    .feature-card-landing .icon { font-size: 32px; margin-bottom: 16px; }
+    .feature-card-landing h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card-landing p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+
+    .section-landing {
+      padding: 100px 0; max-width: 1200px; margin: 0 auto;
+    }
+    .section-landing .section-title {
+      text-align: center; font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800; margin-bottom: 16px;
+    }
+    .section-landing .section-subtitle {
+      text-align: center; color: var(--text-secondary);
+      font-size: 16px; max-width: 560px; margin: 0 auto 48px;
+    }
+
+    /* Pricing Landing */
+    .pricing-grid-landing {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px; max-width: 1100px; margin: 0 auto; padding: 0 20px;
+    }
+    .pricing-card-landing {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 32px;
+      position: relative; transition: all 0.3s;
+    }
+    .pricing-card-landing:hover { transform: translateY(-4px); }
+    .pricing-card-landing.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
+    }
+    .pricing-card-landing .badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: #fff; padding: 4px 20px;
+      border-radius: 100px; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .pricing-card-landing h3 { font-size: 20px; font-weight: 700; }
+    .pricing-card-landing .price {
+      font-size: 44px; font-weight: 900; color: var(--text-primary);
+      margin: 12px 0 4px;
+    }
+    .pricing-card-landing .price span {
+      font-size: 14px; color: var(--text-muted); font-weight: 400;
+    }
+    .pricing-card-landing .subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+    .pricing-card-landing ul { list-style: none; margin: 20px 0; }
+    .pricing-card-landing ul li {
+      padding: 6px 0; font-size: 14px; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pricing-card-landing ul li::before {
+      content: "✓"; color: var(--success); font-weight: 700;
+    }
+
+    /* ==================== AUTH / LOGIN ==================== */
+    #view-auth {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse at center, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+      padding: 20px;
+    }
+    .auth-container {
+      width: 100%; max-width: 440px;
+    }
+    .auth-box {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 40px;
+      backdrop-filter: blur(20px);
+    }
+    .auth-box .logo {
+      text-align: center; font-size: 24px; font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .auth-box .logo .bolt { color: var(--gold); }
+    .auth-box .auth-subtitle {
+      text-align: center; color: var(--text-secondary);
+      font-size: 14px; margin-bottom: 28px;
+    }
+    .auth-box .divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 20px 0; color: var(--text-muted); font-size: 13px;
+    }
+    .auth-box .divider::before, .auth-box .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .auth-box .social-btns {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .auth-box .social-btns .btn {
+      justify-content: center; padding: 12px;
+      font-weight: 600; font-size: 14px;
+    }
+    .auth-box .auth-footer {
+      text-align: center; margin-top: 20px;
+      color: var(--text-muted); font-size: 13px;
+    }
+    .auth-box .auth-footer a { color: var(--accent); font-weight: 600; }
+    .auth-box .error-msg {
+      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      color: var(--danger); font-size: 13px; margin-bottom: 16px;
+      display: none;
+    }
+    .auth-box .error-msg.show { display: block; }
+
+    /* ==================== DASHBOARD LAYOUT ==================== */
+    #view-dashboard {
+      display: none; min-height: 100vh;
+    }
+    .dashboard-layout {
+      display: flex; min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: var(--sidebar-width); background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+      transition: transform 0.3s;
+    }
+    .sidebar .sidebar-header {
+      padding: 18px 20px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar .sidebar-header .logo { font-size: 18px; font-weight: 800; }
+    .sidebar .sidebar-header .logo .bolt { color: var(--gold); }
+    .sidebar .workspace-selector {
+      margin: 12px 16px; padding: 8px 12px;
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); display: flex;
+      align-items: center; justify-content: space-between;
+      cursor: pointer; font-size: 13px; color: var(--text-secondary);
+    }
+    .sidebar .workspace-selector:hover { border-color: var(--border-hover); }
+    .sidebar .nav-section { padding: 12px 16px; }
+    .sidebar .nav-section .section-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); margin-bottom: 8px; padding: 0 8px;
+    }
+    .sidebar .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      color: var(--text-secondary); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.15s; margin-bottom: 2px;
+    }
+    .sidebar .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .sidebar .nav-item.active {
+      background: rgba(124, 58, 237, 0.12); color: var(--accent);
+    }
+    .sidebar .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+    .sidebar .nav-item .badge-count {
+      margin-left: auto; background: var(--bg-hover);
+      padding: 1px 8px; border-radius: 100px; font-size: 11px;
+      font-weight: 600; color: var(--text-muted);
+    }
+    .sidebar .sidebar-footer {
+      margin-top: auto; padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar .user-info {
+      display: flex; align-items: center; gap: 12px; cursor: pointer;
+      padding: 8px; border-radius: var(--radius-sm);
+    }
+    .sidebar .user-info:hover { background: var(--bg-hover); }
+    .sidebar .user-info .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: 14px;
+    }
+    .sidebar .user-info .name { font-size: 13px; font-weight: 600; }
+    .sidebar .user-info .email { font-size: 11px; color: var(--text-muted); }
+
+    /* Main Content */
+    .main-content {
+      margin-left: var(--sidebar-width); flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      height: var(--topbar-height); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; background: var(--bg-primary);
+      position: sticky; top: 0; z-index: 40;
+    }
+    .topbar .left { display: flex; align-items: center; gap: 16px; }
+    .topbar .left h2 { font-size: 18px; font-weight: 700; }
+    .topbar .left .breadcrumb { color: var(--text-muted); font-size: 13px; }
+    .topbar .left .breadcrumb span { color: var(--text-secondary); }
+    .topbar .right { display: flex; align-items: center; gap: 12px; }
+    .page-content {
+      padding: 32px; flex: 1;
+    }
+
+    /* ==================== DASHBOARD VIEWS ==================== */
+
+    /* Services List */
+    .services-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .services-header h2 { font-size: 22px; font-weight: 700; }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .service-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .service-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+    .service-card .top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .service-card .top .name { font-size: 16px; font-weight: 700; }
+    .service-card .top .status {
+      font-size: 12px; font-weight: 600; padding: 3px 10px;
+      border-radius: 100px; display: flex; align-items: center; gap: 5px;
+    }
+    .status-live { background: rgba(34, 197, 94, 0.12); color: var(--success); }
+    .status-live::before { content: ''; width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
+    .status-building { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+    .status-building::before { content: ''; width: 6px; height: 6px; background: var(--warning); border-radius: 50%; animation: pulse 1.5s infinite; }
+    .status-failed { background: rgba(239, 68, 68, 0.12); color: var(--danger); }
+    .status-failed::before { content: ''; width: 6px; height: 6px; background: var(--danger); border-radius: 50%; }
+    .status-sleep { background: rgba(148, 148, 184, 0.12); color: var(--text-muted); }
+    .status-sleep::before { content: ''; width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .service-card .url {
+      font-size: 13px; color: var(--accent); font-family: var(--font-mono);
+      margin-bottom: 12px;
+    }
+    .service-card .meta {
+      display: flex; gap: 16px; font-size: 12px; color: var(--text-muted);
+    }
+    .service-card .meta span { display: flex; align-items: center; gap: 4px; }
+    .service-card .actions {
+      display: flex; gap: 6px; margin-top: 14px;
+    }
+
+    /* Stats Cards */
+    .stats-row-dash {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card-dash {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .stat-card-dash .value { font-size: 28px; font-weight: 800; }
+    .stat-card-dash .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card-dash .trend {
+      font-size: 12px; margin-top: 8px; display: flex; align-items: center; gap: 4px;
+    }
+    .trend-up { color: var(--success); }
+    .trend-down { color: var(--danger); }
+
+    /* New Service Form */
+    .new-service-container {
+      max-width: 720px; margin: 0 auto;
+    }
+    .service-type-selector {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .service-type-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 16px;
+      text-align: center; cursor: pointer; transition: all 0.2s;
+    }
+    .service-type-card:hover { border-color: var(--accent); background: var(--bg-hover); }
+    .service-type-card.selected {
+      border-color: var(--accent); background: rgba(124, 58, 237, 0.08);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+    }
+    .service-type-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .service-type-card .name { font-size: 13px; font-weight: 600; }
+    .service-type-card .desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Service Detail */
+    .service-detail-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+    }
+    .service-detail-header .info h1 { font-size: 24px; font-weight: 700; }
+    .service-detail-header .info .url { font-family: var(--font-mono); font-size: 14px; color: var(--accent); }
+    .detail-tabs {
+      display: flex; gap: 4px; background: var(--bg-secondary);
+      padding: 4px; border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+    }
+    .detail-tab {
+      padding: 8px 20px; border-radius: 6px; font-size: 13px;
+      font-weight: 500; color: var(--text-muted); cursor: pointer;
+      border: none; background: none; transition: all 0.2s;
+    }
+    .detail-tab.active { background: var(--bg-card); color: var(--text-primary); }
+    .detail-tab:hover:not(.active) { color: var(--text-secondary); }
 
     /* Logs */
     .log-viewer {
-      background: #050508; border: 1px solid #1e1e30; border-radius: 12px;
-      padding: 20px; font-family: 'Courier New', monospace; font-size: 13px;
-      max-height: 400px; overflow-y: auto; color: #22c55e; line-height: 1.5;
+      background: #06060e; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      font-family: var(--font-mono); font-size: 13px;
+      max-height: 480px; overflow-y: auto; line-height: 1.7;
     }
-    .log-viewer .log-line { margin: 2px 0; }
-    .log-viewer .log-line.error { color: #ef4444; }
-    .log-viewer .log-line.warn { color: #f59e0b; }
-    .log-viewer .log-line.info { color: #7c7cff; }
-    .log-viewer .log-line.dim { color: #555; }
+    .log-viewer .line { margin: 0; }
+    .log-viewer .line .ts { color: var(--text-muted); margin-right: 12px; }
+    .log-viewer .line.info { color: var(--info); }
+    .log-viewer .line.success { color: var(--success); }
+    .log-viewer .line.error { color: var(--danger); }
+    .log-viewer .line.warn { color: var(--warning); }
+    .log-viewer .line.dim { color: #3a3a5a; }
 
-    /* Premium Code Input */
-    .code-input-wrap { display: flex; gap: 12px; max-width: 500px; margin: 24px auto; }
-    .code-input-wrap input { flex: 1; padding: 14px 20px; background: #0a0a0f; border: 1px solid #2a2a40; border-radius: 10px; color: #fff; font-size: 16px; text-align: center; letter-spacing: 2px; font-weight: 600; }
-    .code-input-wrap input:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+    /* Billing */
+    .billing-plan-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .billing-plan-card .plan-info h3 { font-size: 20px; font-weight: 700; }
+    .billing-plan-card .plan-info p { color: var(--text-secondary); font-size: 14px; }
+    .billing-plan-card .plan-price { font-size: 36px; font-weight: 900; }
+    .billing-plan-card .plan-price span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
 
-    /* Modal */
+    /* Blueprint / IaC */
+    .blueprint-editor {
+      background: #06060e; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      font-family: var(--font-mono); font-size: 13px;
+      min-height: 300px; white-space: pre-wrap; line-height: 1.8;
+      overflow-x: auto;
+    }
+    .blueprint-editor .comment { color: #4a4a6a; }
+    .blueprint-editor .key { color: #7dd3fc; }
+    .blueprint-editor .string { color: var(--success); }
+    .blueprint-editor .number { color: var(--gold); }
+    .blueprint-editor .bool { color: var(--accent); }
+
+    /* ==================== TOAST ==================== */
+    .toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 20px;
+      font-size: 14px; color: var(--text-primary);
+      box-shadow: var(--shadow); display: flex; align-items: center; gap: 10px;
+      animation: slideIn 0.3s ease; min-width: 280px;
+      pointer-events: auto;
+    }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+    .toast.warning { border-color: var(--warning); }
+    .toast.info { border-color: var(--info); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+    /* ==================== MODAL ==================== */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999;
-      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      z-index: 9998; align-items: center; justify-content: center;
+      padding: 20px;
     }
     .modal-overlay.active { display: flex; }
     .modal {
-      background: #14141f; border: 1px solid #2a2a40; border-radius: 20px;
-      padding: 40px; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 32px;
+      max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto;
     }
-    .modal h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-    .modal p { color: #888; margin-bottom: 24px; }
+    .modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .modal p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
 
-    /* Environment */
-    .env-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-    .env-row input { flex: 1; padding: 8px 12px; background: #0a0a0f; border: 1px solid #2a2a40; border-radius: 6px; color: #fff; font-size: 13px; }
-    .env-row .btn { padding: 6px 12px; font-size: 12px; }
-
-    /* Footer */
-    footer {
-      text-align: center; padding: 40px 20px; border-top: 1px solid #1e1e30;
-      color: #555; font-size: 13px; margin-top: 60px;
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .landing-nav { padding: 14px 20px; }
     }
-    footer a { color: #888; }
-
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 24px; right: 24px; background: #1e1e30;
-      border: 1px solid #3a3a5c; border-radius: 12px; padding: 16px 24px;
-      color: #fff; font-size: 14px; z-index: 1000;
-      transform: translateY(100px); opacity: 0; transition: all 0.3s;
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { border-color: #22c55e; }
-    .toast.error { border-color: #ef4444; }
-    .toast.warning { border-color: #f59e0b; }
-
-    /* Responsive */
     @media (max-width: 768px) {
-      .hero h1 { font-size: 32px; }
-      .hero p { font-size: 16px; }
-      .navbar { padding: 12px 16px; }
-      .nav-links { gap: 12px; }
-      .nav-links a { font-size: 12px; }
-      .deploy-section { padding: 24px; }
-      .grid-2 { grid-template-columns: 1fr; }
+      .page-content { padding: 20px 16px; }
+      .hero-section { padding: 100px 16px 60px; }
+      .hero-section .stats-row { gap: 24px; }
+      .pricing-grid-landing { grid-template-columns: 1fr; }
+      .topbar { padding: 0 16px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .stats-row-dash { grid-template-columns: 1fr 1fr; }
+      .landing-nav .nav-links a:not(.btn) { display: none; }
+      .billing-plan-card { flex-direction: column; text-align: center; }
     }
+    @media (max-width: 480px) {
+      .stats-row-dash { grid-template-columns: 1fr; }
+      .service-type-selector { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Code mirror-like styling for blueprint */
+    .cm-editor { font-family: var(--font-mono); font-size: 13px; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 60px 20px;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .empty-state p { color: var(--text-secondary); max-width: 400px; margin: 0 auto 20px; }
+
+    /* Toggle */
+    .toggle {
+      width: 44px; height: 24px; background: var(--border);
+      border-radius: 999px; cursor: pointer; position: relative;
+      transition: background 0.2s; flex-shrink: 0;
+    }
+    .toggle.active { background: var(--accent); }
+    .toggle::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle.active::after { transform: translateX(20px); }
+
+    /* Badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 10px; border-radius: 100px; font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-pro { background: rgba(124, 58, 237, 0.12); color: var(--accent); }
+    .badge-business { background: rgba(59, 130, 246, 0.12); color: var(--info); }
+    .badge-elite { background: rgba(251, 191, 36, 0.12); color: var(--gold); }
+    .badge-free { background: rgba(148, 148, 184, 0.12); color: var(--text-muted); }
+
+    /* Spinner */
+    .spinner {
+      width: 20px; height: 20px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">
-    ⚡ Z-URL <small>· Hosting Platform</small>
-  </div>
-  <div class="nav-links">
-    <a href="#" onclick="showTab('features')">Features</a>
-    <a href="#" onclick="showTab('pricing')">Pricing</a>
-    <a href="#" onclick="showTab('dashboard')">Dashboard</a>
-    <a href="#" onclick="showTab('deploy')" class="btn btn-primary">Deploy</a>
-  </div>
-</nav>
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toastContainer"></div>
 
-<!-- HERO -->
-<div class="hero">
-  <h1>Deploy from GitHub. Scale Instantly.</h1>
-  <p>Connect your GitHub repository and Z-URL builds, deploys, and hosts your web apps — just like Render. Static sites, Node.js APIs, Python backends, and more.</p>
-  <div class="hero-buttons">
-    <a href="#" onclick="showTab('deploy')" class="btn btn-primary">⚡ Deploy from GitHub</a>
-    <a href="#" onclick="showTab('dashboard')" class="btn btn-outline">📊 My Dashboard</a>
-    <a href="https://wa.me/2349066760078?text=Hello%20Zeus!%20I%20want%20Premium%20Hosting%20for%20my%20repos" target="_blank" class="btn btn-outline">💬 Contact Zeus</a>
+<!-- ==================== MODAL ==================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <h2 id="modalTitle">Modal</h2>
+    <p id="modalDesc">Description</p>
+    <div id="modalBody"></div>
+    <div style="display:flex; gap:12px; margin-top:20px;">
+      <button class="btn btn-primary" id="modalConfirm">Confirm</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
-<div class="container">
-
-  <!-- FEATURES TAB -->
-  <div id="tab-features" class="section">
-    <h2 class="section-title">Everything Render Has — Plus More</h2>
-    <p class="section-subtitle">Z-URL is a complete deployment platform. Connect your GitHub repo, pick your runtime, and we handle the rest.</p>
-
-    <div class="grid-3">
-      <div class="card feature-card"><div class="icon">🔗</div><h3>GitHub Integration</h3><p>Connect any public or private repo. Auto-deploy on every push to your branch.</p></div>
-      <div class="card feature-card"><div class="icon">🐳</div><h3>Containerized Builds</h3><p>Each deployment runs in an isolated Docker container with full build logs.</p></div>
-      <div class="card feature-card"><div class="icon">🌐</div><h3>Custom Domains</h3><p>Bring your own domain with automatic SSL/HTTPS via Let's Encrypt.</p></div>
-      <div class="card feature-card"><div class="icon">⚡</div><h3>Auto-scaling</h3><p>Apps scale from 0 to thousands of requests. Pay only for what you use.</p></div>
-      <div class="card feature-card"><div class="icon">📊</div><h3>Real-time Analytics</h3><p>CPU, memory, network, and request logs in real-time for every service.</p></div>
-      <div class="card feature-card"><div class="icon">🔐</div><h3>Environment Secrets</h3><p>Securely store API keys, DB credentials, and config variables.</p></div>
-      <div class="card feature-card"><div class="icon">🛡️</div><h3>DDoS Protection</h3><p>Built-in WAF and rate limiting to keep your apps safe.</p></div>
-      <div class="card feature-card"><div class="icon">📧</div><h3>Email Alerts</h3><p>Get notified on deploy success, failure, or when your app goes down.</p></div>
-      <div class="card feature-card"><div class="icon">🔄</div><h3>Rollback</h3><p>Instant rollback to any previous deployment with one click.</p></div>
+<!-- ==================== VIEW: LANDING ==================== -->
+<div id="view-landing">
+  <nav class="landing-nav">
+    <div class="logo"><span class="bolt">⚡</span> Zeus Cloud <span>· Hosting</span></div>
+    <div class="nav-links">
+      <a href="#" onclick="scrollToSection('features')">Features</a>
+      <a href="#" onclick="scrollToSection('pricing')">Pricing</a>
+      <a href="#" onclick="scrollToSection('docs')">Docs</a>
+      <a href="#" onclick="scrollToSection('contact')">Contact</a>
+      <a href="#" class="btn btn-ghost" onclick="showAuth()">Sign In</a>
+      <a href="#" class="btn btn-primary" onclick="showAuth()">Get Started Free</a>
     </div>
+  </nav>
 
-    <div style="margin-top: 48px;">
-      <h3 class="section-title" style="font-size:24px;">Supported Runtimes</h3>
-      <div class="grid-4" style="margin-top: 24px;">
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">📄</div><h3>Static Sites</h3><p>HTML, CSS, JS, React, Vue, Angular, Gatsby, Next.js (SSG)</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🟢</div><h3>Node.js</h3><p>Express, Next.js (SSR), Nest, Fastify, SvelteKit, Nuxt</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🐍</div><h3>Python</h3><p>Django, Flask, FastAPI, Streamlit, Dash</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">☕</div><h3>Java / JVM</h3><p>Spring Boot, Micronaut, Quarkus, Kotlin, Scala</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🦀</div><h3>Rust</h3><p>Actix, Rocket, Axum, Warp</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">💎</div><h3>Ruby</h3><p>Rails, Sinatra, Rack</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🐘</div><h3>PHP</h3><p>Laravel, Symfony, WordPress</p></div>
-        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🔧</div><h3>Dockerfile</h3><p>Custom Dockerfiles for any stack</p></div>
-      </div>
+  <div class="hero-section">
+    <div class="badge">⚡ Now in Beta · Trusted by 10,000+ Builders</div>
+    <h1>Deploy Like a God.<br>Scale Like Thunder.</h1>
+    <p class="subtitle">Zeus Cloud is the ultimate deployment platform. Connect GitHub, auto-build, scale globally — from your first hobby project to your billionth user.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="#" class="btn btn-primary btn-lg" onclick="showAuth()">⚡ Get Started Free</a>
+      <a href="#" class="btn btn-secondary btn-lg" onclick="showAuth()">View Dashboard →</a>
     </div>
-
-    <div style="margin-top: 48px;">
-      <h3 class="section-title" style="font-size:24px;">How It Works</h3>
-      <div class="grid-3" style="counter-reset: step;">
-        <div class="card step-card"><div class="num">1</div><div><h3>Connect GitHub</h3><p>Authorize Z-URL to access your repositories. Select the repo you want to deploy.</p></div></div>
-        <div class="card step-card"><div class="num">2</div><div><h3>Configure Build</h3><p>Choose your runtime, set the build command, start command, and add environment variables.</p></div></div>
-        <div class="card step-card"><div class="num">3</div><div><h3>Deploy</h3><p>Click deploy. We clone, build, and run your app. Get a *.zurl.app URL instantly.</p></div></div>
-        <div class="card step-card"><div class="num">4</div><div><h3>Auto-Deploy</h3><p>Every push to your branch triggers a new build and deploy. Automatic rollback on failure.</p></div></div>
-        <div class="card step-card"><div class="num">5</div><div><h3>Scale Up</h3><p>Upgrade your plan for more resources. Premium gets priority builds, more RAM, custom domains.</p></div></div>
-        <div class="card step-card"><div class="num">6</div><div><h3>Monitor</h3><p>Real-time logs, analytics, CPU/RAM metrics, and uptime monitoring from your dashboard.</p></div></div>
-      </div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="num">10K+</div><div class="label">Active Developers</div></div>
+      <div class="stat-item"><div class="num">50K+</div><div class="label">Deployments</div></div>
+      <div class="stat-item"><div class="num">99.99%</div><div class="label">Uptime SLA</div></div>
+      <div class="stat-item"><div class="num">12</div><div class="label">Global Regions</div></div>
+    </div>
+    <div class="trust-bar">
+      <span>TRUSTED BY TEAMS AT</span>
+      <span>NETFLIX</span><span>·</span><span>SPOTIFY</span><span>·</span><span>UBER</span><span>·</span><span>NASA</span><span>·</span><span>TOGETHER AI</span><span>·</span><span>SHOPIFY</span>
     </div>
   </div>
 
-  <!-- PRICING TAB -->
-  <div id="tab-pricing" class="section" style="display:none;">
-    <h2 class="section-title">Choose Your Power Tier</h2>
-    <p class="section-subtitle">From Free to Zeus Elite — pick the plan that matches your ambition.</p>
+  <div id="features" class="section-landing" style="padding-top:40px;">
+    <h2 class="section-title">Everything Render Has — and More</h2>
+    <p class="section-subtitle">Six service types, managed databases, infrastructure-as-code, and Zeus-exclusive features you won't find anywhere else.</p>
+    <div class="feature-grid">
+      <div class="feature-card-landing"><div class="icon">🌐</div><h3>Web Services</h3><p>Full HTTP/2, auto-scaling, custom domains, free TLS. Node.js, Python, Go, Rust, Ruby, Java, PHP, Elixir, and Docker.</p></div>
+      <div class="feature-card-landing"><div class="icon">📄</div><h3>Static Sites</h3><p>Blazing-fast CDN, instant cache invalidation, continuous deploy from Git. React, Vue, Svelte, Astro, Hugo, Jekyll.</p></div>
+      <div class="feature-card-landing"><div class="icon">🔒</div><h3>Private Services</h3><p>Internal-only endpoints with private networking. No public exposure, full security. Ideal for microservices.</p></div>
+      <div class="feature-card-landing"><div class="icon">⚙️</div><h3>Background Workers</h3><p>Dedicated workers for Sidekiq, Celery, Bull, queues, and async job processing. Runs continuously.</p></div>
+      <div class="feature-card-landing"><div class="icon">⏰</div><h3>Cron Jobs</h3><p>Schedule any script with cron syntax. Failure notifications, live logs, prorated by the second.</p></div>
+      <div class="feature-card-landing"><div class="icon">🔄</div><h3>Workflows (Beta)</h3><p>Durable execution with distributed compute. Sub-second task spin-up, automatic retries, parallel tasks.</p></div>
+      <div class="feature-card-landing"><div class="icon">🗄️</div><h3>Managed PostgreSQL</h3><p>Fully managed Postgres with PITR, read replicas, high availability. Free tier available.</p></div>
+      <div class="feature-card-landing"><div class="icon">⚡</div><h3>Managed Redis / KV</h3><p>Redis-compatible key-value store. Job queues, caching, pub/sub. From 25MB free to 512GB.</p></div>
+      <div class="feature-card-landing"><div class="icon">📋</div><h3>Blueprints (IaC)</h3><p>Define your entire infra in a render.yaml. Version-controlled, repeatable, CI/CD-friendly.</p></div>
+      <div class="feature-card-landing"><div class="icon">🔐</div><h3>Environment Groups</h3><p>Share secrets and config across services. Encrypted at rest with AES-256.</p></div>
+      <div class="feature-card-landing"><div class="icon">📡</div><h3>Edge Caching</h3><p>Global CDN with edge caching for static assets. Sub-50ms TTFB worldwide.</p></div>
+      <div class="feature-card-landing"><div class="icon">🛡️</div><h3>DDoS Protection</h3><p>Built-in WAF, rate limiting, and DDoS mitigation at the edge. No extra config.</p></div>
+      <div class="feature-card-landing"><div class="icon">📊</div><h3>Real-Time Analytics</h3><p>CPU, RAM, network, request rates, error rates. Live metrics with 1-second granularity.</p></div>
+      <div class="feature-card-landing"><div class="icon">📝</div><h3>Audit Logs</h3><p>Every action logged. Who deployed what, when. SOC 2, ISO 27001, HIPAA ready.</p></div>
+      <div class="feature-card-landing"><div class="icon">💾</div><h3>Persistent Disks</h3><p>SSD storage attached to any service. $0.25/GB per month. Hot-swappable.</p></div>
+      <div class="feature-card-landing"><div class="icon">🤖</div><h3>AI Deploy (Zeus Only)</h3><p>Deploy AI agents, LLM APIs, and ML models with one click. GPU instances included.</p></div>
+      <div class="feature-card-landing"><div class="icon">🔗</div><h3>WebSockets</h3><p>Full bi-directional streaming. Build real-time apps, chat, live dashboards.</p></div>
+      <div class="feature-card-landing"><div class="icon">📦</div><h3>Object Storage</h3><p>S3-compatible object storage. Store and serve files directly from your services.</p></div>
+    </div>
+  </div>
 
-    <div class="pricing-grid">
-      <div class="pricing-card">
-        <h3>Free</h3>
-        <div class="price">$0 <span>/ forever</span></div>
-        <p class="subtitle">For hobby projects and testing</p>
+  <div id="pricing" class="section-landing">
+    <h2 class="section-title">Plans That Scale with You</h2>
+    <p class="section-subtitle">From free forever to Zeus Elite. No hidden fees. Prorated by the second.</p>
+    <div class="pricing-grid-landing">
+      <div class="pricing-card-landing">
+        <h3>Hobby</h3>
+        <div class="price">$0 <span>/ month</span></div>
+        <p class="subtitle">For personal projects</p>
         <ul>
-          <li>1 service</li>
-          <li>512 MB RAM</li>
-          <li>0.25 vCPU</li>
-          <li>1 GB storage</li>
+          <li>1 web service (512MB RAM, 0.1 CPU)</li>
+          <li>1 static site (unlimited bandwidth)</li>
+          <li>1 cron job</li>
+          <li>1 Postgres DB (256MB, 30 days)</li>
+          <li>1 Redis KV (25MB)</li>
+          <li>2 custom domains</li>
+          <li>5GB bandwidth included</li>
           <li>Community support</li>
-          <li>*.zurl.app subdomain</li>
-          <li>7-day build history</li>
         </ul>
-        <button class="btn btn-outline" style="width:100%;" onclick="showTab('deploy')">Start Free</button>
+        <button class="btn btn-secondary btn-block" onclick="showAuth()">Start Free</button>
       </div>
-
-      <div class="pricing-card featured">
-        <div class="badge">🔥 Most Popular</div>
-        <h3>Premium ZEUS</h3>
-        <div class="price">$1 <span>/ once</span></div>
-        <p class="subtitle">Code: <strong>ZEUS100 — ZEUS199</strong></p>
+      <div class="pricing-card-landing featured">
+        <div class="badge">🔥 Best Value</div>
+        <h3>Pro</h3>
+        <div class="price">$25 <span>/ month</span></div>
+        <p class="subtitle">For growing teams</p>
         <ul>
-          <li>10 services</li>
-          <li>2 GB RAM</li>
-          <li>1 vCPU</li>
-          <li>10 GB storage</li>
-          <li>Custom domain + SSL</li>
-          <li>Auto-deploy from GitHub</li>
-          <li>Build logs & rollback</li>
-          <li>30-day build history</li>
+          <li>Unlimited services</li>
+          <li>Up to Standard instances (2GB RAM)</li>
+          <li>15 custom domains</li>
+          <li>25GB bandwidth included</li>
+          <li>1000 build minutes/month</li>
+          <li>SOC 2 & ISO reports</li>
+          <li>Unlimited team members</li>
+          <li>Audit logs</li>
+          <li>Premium support</li>
+        </ul>
+        <button class="btn btn-primary btn-block" onclick="showAuth()">Get Pro</button>
+        <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:8px;">Use code <strong>ZEUS100-199</strong></p>
+      </div>
+      <div class="pricing-card-landing">
+        <h3>Business</h3>
+        <div class="price">$99 <span>/ month</span></div>
+        <p class="subtitle">For scaling businesses</p>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>Up to Pro instances (4GB RAM)</li>
+          <li>50 custom domains</li>
+          <li>100GB bandwidth</li>
+          <li>5000 build minutes</li>
+          <li>HIPAA compliance</li>
+          <li>Advanced RBAC</li>
+          <li>SSO & SCIM</li>
           <li>Priority support (WhatsApp)</li>
         </ul>
-        <button class="btn btn-primary" style="width:100%;" onclick="showCodeModal('premium')">Get Premium</button>
+        <button class="btn btn-secondary btn-block" onclick="showAuth()">Get Business</button>
+        <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:8px;">Use code <strong>ZEUS200-299</strong></p>
       </div>
-
-      <div class="pricing-card">
-        <h3>Business ZEUS</h3>
-        <div class="price">$5 <span>/ once</span></div>
-        <p class="subtitle">Code: <strong>ZEUS200 — ZEUS299</strong></p>
+      <div class="pricing-card-landing">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <h3 style="margin:0;">🦅 Zeus Elite</h3>
+          <span class="badge badge-elite">EXCLUSIVE</span>
+        </div>
+        <div class="price">$149 <span>/ month</span></div>
+        <p class="subtitle">The ultimate cloud experience</p>
         <ul>
-          <li>25 services</li>
-          <li>4 GB RAM</li>
-          <li>2 vCPU</li>
-          <li>50 GB storage</li>
-          <li>Everything in Premium</li>
-          <li>Team access (5 users)</li>
-          <li>API access</li>
-          <li>Advanced analytics</li>
-          <li>90-day build history</li>
-          <li>DDoS protection</li>
-        </ul>
-        <button class="btn btn-outline" style="width:100%;" onclick="showCodeModal('business')">Get Business</button>
-      </div>
-
-      <div class="pricing-card">
-        <h3>🦅 Zeus Elite</h3>
-        <div class="price">$15 <span>/ once</span></div>
-        <p class="subtitle">Code: <strong>ZEUS300 — ZEUS102+</strong></p>
-        <ul>
-          <li>100 services</li>
-          <li>8 GB RAM</li>
-          <li>4 vCPU</li>
-          <li>200 GB storage</li>
           <li>Everything in Business</li>
+          <li>Up to Pro Max instances (16GB RAM)</li>
+          <li>Unlimited custom domains</li>
+          <li>1TB bandwidth</li>
+          <li>Unlimited build minutes</li>
+          <li>GPU instances (AI/ML)</li>
           <li>Unlimited team members</li>
-          <li>Priority infrastructure</li>
-          <li>Custom Docker images</li>
-          <li>Lifetime build history</li>
+          <li>Multiple workspaces</li>
           <li>Direct Zeus support line</li>
+          <li>Lifetime build history</li>
         </ul>
-        <button class="btn btn-warning" style="width:100%;" onclick="showCodeModal('elite')">Go Elite</button>
+        <button class="btn btn-warning btn-block" onclick="showAuth()">Go Elite</button>
+        <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:8px;">Use code <strong>ZEUS300+</strong></p>
       </div>
     </div>
 
-    <!-- Premium Code Entry -->
-    <div style="margin-top: 60px; text-align: center; background: #12121a; border: 1px solid #1e1e30; border-radius: 16px; padding: 48px 24px;">
-      <h3 style="font-size: 24px; margin-bottom: 8px;">🔑 Unlock Premium with Your Code</h3>
-      <p style="color: #888; margin-bottom: 24px;">Enter your ZEUS premium pass code to unlock the tier you purchased from Zeus.</p>
-      <div class="code-input-wrap">
-        <input type="text" id="premiumCode" placeholder="ZEUS100 — ZEUS999" oninput="this.value = this.value.toUpperCase()" maxlength="10">
-        <button class="btn btn-warning" onclick="activatePremium()">Unlock</button>
+    <!-- Premium Code Activation -->
+    <div style="max-width:560px; margin: 48px auto 0; text-align:center; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:40px 24px;">
+      <h3 style="font-size:22px; margin-bottom:8px;">🔑 Already Have a Zeus Pass?</h3>
+      <p style="color:var(--text-secondary); margin-bottom:24px;">Enter your premium activation code to unlock your tier instantly.</p>
+      <div style="display:flex; gap:12px; max-width:400px; margin:0 auto;">
+        <input class="input input-mono" id="landingPremiumCode" placeholder="ZEUS100 — ZEUS999" style="text-align:center; letter-spacing:3px; font-weight:600; font-size:18px;" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+        <button class="btn btn-warning btn-lg" onclick="activateCode()">Unlock</button>
       </div>
-      <p style="color: #666; font-size: 13px; margin-top: 12px;">
-        Don't have a code? <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20to%20buy%20a%20ZEUS%20Premium%20code%20for%20hosting%20%E2%9A%A1" target="_blank" style="color: #7c7cff;">Contact Zeus on WhatsApp →</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- DASHBOARD TAB -->
-  <div id="tab-dashboard" class="section" style="display:none;">
-    <h2 class="section-title">📊 My Dashboard</h2>
-    <p class="section-subtitle">Manage your services, monitor deployments, and view analytics.</p>
-
-    <!-- Stats -->
-    <div class="stats-grid" id="dashboardStats">
-      <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-value" id="statServices">0</div><div class="stat-label">Total Services</div></div>
-      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statRunning">0</div><div class="stat-label">Running</div></div>
-      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="statDeploys">0</div><div class="stat-label">Total Deployments</div></div>
-      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statVisitors">0</div><div class="stat-label">All-Time Visitors</div></div>
-    </div>
-
-    <!-- Services Table -->
-    <div class="card" style="padding: 0; overflow: hidden;">
-      <div style="padding: 20px 24px; border-bottom: 1px solid #1e1e30; display: flex; justify-content: space-between; align-items: center;">
-        <h3 style="font-size: 16px; margin: 0;">Your Services</h3>
-        <button class="btn btn-primary btn-sm" onclick="showTab('deploy')">+ New Service</button>
-      </div>
-      <div class="table-wrap">
-        <table id="servicesTable">
-          <thead>
-            <tr>
-              <th>Service</th>
-              <th>Repo</th>
-              <th>Branch</th>
-              <th>Status</th>
-              <th>URL</th>
-              <th>RAM</th>
-              <th>Uptime</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="servicesBody">
-            <!-- Populated by JavaScript -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Deploy Logs -->
-    <div style="margin-top: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="font-size: 16px;">📋 Recent Build Logs</h3>
-        <span style="font-size: 12px; color: #666;" id="logTimestamp">Live</span>
-      </div>
-      <div class="log-viewer" id="logViewer">
-        <div class="log-line dim">[Z-URL] Waiting for deployments...</div>
-      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:16px;">Don't have a code? <a href="https://wa.me/2349066760078" target="_blank">Buy from Zeus on WhatsApp →</a></p>
     </div>
   </div>
 
-  <!-- DEPLOY TAB -->
-  <div id="tab-deploy" class="section" style="display:none;">
-    <div class="deploy-section">
-      <h2>⚡ Deploy from GitHub</h2>
-      <p class="desc">Connect any GitHub repository and deploy in seconds. Auto-builds on every push.</p>
+  <div id="docs" class="section-landing" style="text-align:center; padding:60px 20px;">
+    <h2 class="section-title">Infrastructure as Code with Blueprints</h2>
+    <p class="section-subtitle">Define your entire infrastructure in a `zeus.yaml` file. Version-controlled. Repeatable. CI/CD integrated.</p>
+    <div style="background:#06060e; border:1px solid var(--border); border-radius:var(--radius); padding:24px; max-width:600px; margin:0 auto; text-align:left; font-family:var(--font-mono); font-size:13px; line-height:1.8; overflow-x:auto;">
+      <span style="color:#4a4a6a;"># zeus.yaml — Full Infrastructure Blueprint</span><br>
+      <span style="color:#7dd3fc;">services</span>:<br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;- type</span>: <span style="color:var(--success);">web</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span style="color:var(--success);">api-gateway</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;env</span>: <span style="color:var(--success);">node</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;region</span>: <span style="color:var(--success);">nigeria-lagos</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span style="color:var(--success);">standard</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;buildCommand</span>: <span style="color:var(--success);">npm install && npm run build</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;startCommand</span>: <span style="color:var(--success);">node dist/index.js</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;- type</span>: <span style="color:var(--success);">postgres</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span style="color:var(--success);">main-db</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span style="color:var(--success);">standard-2gb</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;- type</span>: <span style="color:var(--success);">redis</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span style="color:var(--success);">cache</span><br>
+      <span style="color:#7dd3fc;">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span style="color:var(--success);">standard-1gb</span><br>
+      <span style="color:#4a4a6a;"># ... and 12 more services, 3 databases, env groups</span>
+    </div>
+    <button class="btn btn-primary btn-lg" style="margin-top:24px;" onclick="showAuth()">🚀 Deploy with Blueprint</button>
+  </div>
 
-      <!-- Tabs within deploy -->
-      <div class="tabs">
-        <button class="tab active" data-deploytab="new" onclick="switchDeployTab('new')">New Deploy</button>
-        <button class="tab" data-deploytab="existing" onclick="switchDeployTab('existing')">Existing Repos</button>
-        <button class="tab" data-deploytab="docker" onclick="switchDeployTab('docker')">Dockerfile</button>
+  <div id="contact" class="section-landing" style="text-align:center; padding:60px 20px; border-top:1px solid var(--border);">
+    <h2 class="section-title">Built by Zeus for You</h2>
+    <p class="section-subtitle">Direct support from the creator. Premium codes, custom plans, enterprise deals.</p>
+    <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+      <a href="https://wa.me/2349066760078?text=Hello%20Zeus!%20I%20want%20to%20deploy%20on%20Zeus%20Cloud%20%E2%9A%A1" target="_blank" class="btn btn-primary btn-lg">💬 Chat with Zeus</a>
+      <a href="https://wa.me/2349066760078?text=I%20want%20a%20ZEUS%20Premium%20code" target="_blank" class="btn btn-warning btn-lg">🔑 Buy Premium Code</a>
+    </div>
+    <p style="color:var(--text-muted); margin-top:20px;">Zeus · WhatsApp: +234 906 676 0078</p>
+  </div>
+</div>
+
+<!-- ==================== VIEW: AUTH ==================== -->
+<div id="view-auth" style="display:none;">
+  <div class="auth-container" style="position:relative;">
+    <div style="text-align:center; margin-bottom:24px;">
+      <div style="font-size:28px; font-weight:800;"><span style="color:var(--gold);">⚡</span> Zeus Cloud</div>
+      <p style="color:var(--text-muted); font-size:14px; margin-top:4px;">The cloud for builders</p>
+    </div>
+    <div class="auth-box">
+      <div id="authError" class="error-msg"></div>
+      <div class="social-btns">
+        <button class="btn btn-secondary" onclick="authWithGithub()"><span style="font-size:20px;">🐙</span> Continue with GitHub</button>
+        <button class="btn btn-secondary" onclick="authWithGoogle()"><span style="font-size:20px;">📧</span> Continue with Google</button>
+      </div>
+      <div class="divider">or continue with email</div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input class="input" id="authEmail" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="input" id="authPassword" type="password" placeholder="At least 8 characters">
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="authWithEmail()" id="authBtn">Create Account</button>
+      <div class="auth-footer">
+        <span id="authToggle">Already have an account? <a href="#" onclick="toggleAuthMode()">Sign in</a></span>
+      </div>
+      <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border); text-align:center;">
+        <a href="#" onclick="showLanding()" style="color:var(--text-muted); font-size:13px;">← Back to home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VIEW: DASHBOARD ==================== -->
+<div id="view-dashboard">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span style="font-size:20px;color:var(--gold);">⚡</span>
+        <span class="logo">Zeus Cloud</span>
+      </div>
+      <div class="workspace-selector" onclick="showToast('Workspace: Personal','info')">
+        <span>🏢 Personal Workspace</span>
+        <span>▾</span>
+      </div>
+      <div class="nav-section">
+        <div class="section-label">Overview</div>
+        <div class="nav-item active" data-dview="services" onclick="switchDashboardView('services')">
+          <span class="icon">📦</span> Services
+          <span class="badge-count" id="sidebarServiceCount">0</span>
+        </div>
+        <div class="nav-item" data-dview="blueprints" onclick="switchDashboardView('blueprints')">
+          <span class="icon">📋</span> Blueprints
+        </div>
+        <div class="nav-item" data-dview="databases" onclick="switchDashboardView('databases')">
+          <span class="icon">🗄️</span> Databases
+        </div>
+        <div class="nav-item" data-dview="envgroups" onclick="switchDashboardView('envgroups')">
+          <span class="icon">🔐</span> Environment Groups
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="section-label">Management</div>
+        <div class="nav-item" data-dview="billing" onclick="switchDashboardView('billing')">
+          <span class="icon">💳</span> Billing
+        </div>
+        <div class="nav-item" data-dview="logs" onclick="switchDashboardView('logs')">
+          <span class="icon">📝</span> Audit Logs
+        </div>
+        <div class="nav-item" data-dview="settings" onclick="switchDashboardView('settings')">
+          <span class="icon">⚙️</span> Settings
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-info" onclick="switchDashboardView('settings')">
+          <div class="avatar" id="sidebarAvatar">Z</div>
+          <div>
+            <div class="name" id="sidebarName">User</div>
+            <div class="email" id="sidebarEmail">user@zeus.cloud</div>
+          </div>
+          <span style="margin-left:auto;font-size:16px;">⋯</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="left">
+          <button class="btn btn-ghost btn-icon" onclick="toggleSidebar()" style="display:none;" id="sidebarToggle">☰</button>
+          <div class="breadcrumb"><span id="breadcrumbCurrent">Services</span></div>
+        </div>
+        <div class="right">
+          <button class="btn btn-ghost btn-icon" onclick="showToast('⌘K Search coming soon','info')" title="Search (⌘K)">🔍</button>
+          <button class="btn btn-ghost btn-icon" onclick="showToast('Notifications','info')" title="Notifications">🔔</button>
+          <button class="btn btn-primary btn-sm" onclick="switchDashboardView('new-service')">+ New</button>
+        </div>
       </div>
 
-      <!-- New Deploy Form -->
-      <div id="deploy-new" class="deploy-tab-content">
-        <div class="form-group">
-          <label>GitHub Repository URL</label>
-          <input type="text" id="repoUrl" placeholder="https://github.com/username/repository" value="">
-          <div class="hint">Public or private repo. Make sure it has a startable application.</div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Branch</label>
-            <input type="text" id="branch" value="main" placeholder="main">
-          </div>
-          <div class="form-group">
-            <label>Runtime</label>
-            <select id="runtime">
-              <option value="static">Static Site (HTML/JS/CSS)</option>
-              <option value="node">Node.js</option>
-              <option value="python">Python</option>
-              <option value="ruby">Ruby</option>
-              <option value="php">PHP</option>
-              <option value="rust">Rust</option>
-              <option value="java">Java/JVM</option>
-              <option value="docker">Dockerfile (Custom)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Build Command</label>
-            <input type="text" id="buildCmd" placeholder="npm install && npm run build" value="npm install">
-            <div class="hint">Leave empty for static sites. Example: <code>npm install && npm run build</code></div>
-          </div>
-          <div class="form-group">
-            <label>Start Command</label>
-            <input type="text" id="startCmd" placeholder="npm start" value="npm start">
-            <div class="hint">How to run your app. Example: <code>npm start</code>, <code>python app.py</code></div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Service Name</label>
-          <input type="text" id="serviceName" placeholder="my-awesome-app">
-          <div class="hint">Will be available at <code>my-awesome-app.zurl.app</code></div>
-        </div>
-
-        <div class="form-group">
-          <label>Environment Variables <span style="color: #666; font-weight: 400;">(optional)</span></label>
-          <div id="envVars">
-            <div class="env-row">
-              <input type="text" placeholder="KEY" class="env-key">
-              <input type="text" placeholder="VALUE" class="env-val">
-              <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+      <div class="page-content">
+        <!-- ===== DASHBOARD: Services ===== -->
+        <div class="dview" id="dview-services">
+          <div class="services-header">
+            <h2>Services</h2>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary btn-sm" onclick="switchDashboardView('new-service')">+ New Service</button>
+              <button class="btn btn-ghost btn-sm" onclick="switchDashboardView('blueprints')">📋 Blueprint</button>
             </div>
           </div>
-          <button class="btn btn-outline btn-sm" style="margin-top: 8px;" onclick="addEnvVar()">+ Add Variable</button>
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
-          <button class="btn btn-primary" onclick="deployService()" style="font-size: 16px; padding: 14px 40px;">🚀 Deploy Now</button>
-          <button class="btn btn-outline" onclick="showTab('dashboard')">Cancel</button>
-        </div>
-      </div>
-
-      <!-- Existing Repos Tab -->
-      <div id="deploy-existing" class="deploy-tab-content" style="display:none;">
-        <div class="form-group">
-          <label>Select a previously connected repo</label>
-          <select id="existingRepo" onchange="fillExistingRepo()">
-            <option value="">— No repos connected yet. Deploy one first —</option>
-          </select>
-        </div>
-        <div id="existingRepoDetails" style="background: #0a0a0f; border-radius: 10px; padding: 20px; margin-top: 16px; display: none;">
-          <p style="color: #888; margin-bottom: 12px;">Last deployment settings will be re-used. Trigger a fresh build below.</p>
-          <button class="btn btn-primary" onclick="redeployExisting()">🔄 Re-deploy</button>
-        </div>
-      </div>
-
-      <!-- Docker Tab -->
-      <div id="deploy-docker" class="deploy-tab-content" style="display:none;">
-        <div class="form-group">
-          <label>GitHub Repository with Dockerfile</label>
-          <input type="text" id="dockerRepoUrl" placeholder="https://github.com/username/repo-with-dockerfile">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Branch</label>
-            <input type="text" id="dockerBranch" value="main">
+          <div class="stats-row-dash" id="servicesStats">
+            <div class="stat-card-dash"><div class="value" id="statTotal">0</div><div class="label">Total Services</div></div>
+            <div class="stat-card-dash"><div class="value" id="statLive" style="color:var(--success);">0</div><div class="label">Live</div></div>
+            <div class="stat-card-dash"><div class="value" id="statBuilding" style="color:var(--warning);">0</div><div class="label">Building</div></div>
+            <div class="stat-card-dash"><div class="value" id="statDeploys">0</div><div class="label">Total Deploys</div></div>
+            <div class="stat-card-dash"><div class="value" id="statUptime" style="color:var(--success);">99.9%</div><div class="label">Avg Uptime</div></div>
           </div>
-          <div class="form-group">
-            <label>Dockerfile Path</label>
-            <input type="text" id="dockerfilePath" value="Dockerfile" placeholder="Dockerfile">
+          <div class="services-grid" id="servicesGrid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="empty-state" id="servicesEmpty" style="display:none;">
+            <div class="icon">⚡</div>
+            <h3>No services yet</h3>
+            <p>Deploy your first app from GitHub in seconds.</p>
+            <button class="btn btn-primary" onclick="switchDashboardView('new-service')">🚀 Deploy Your First Service</button>
           </div>
         </div>
-        <div class="form-group">
-          <label>Service Name</label>
-          <input type="text" id="dockerServiceName" placeholder="my-docker-app">
+
+        <!-- ===== DASHBOARD: New Service ===== -->
+        <div class="dview" id="dview-new-service" style="display:none;">
+          <div class="new-service-container">
+            <h2 style="font-size:24px; font-weight:800; margin-bottom:8px;">Create a New Service</h2>
+            <p style="color:var(--text-secondary); margin-bottom:24px;">Choose a service type to get started. Connect your GitHub repo, configure, and deploy.</p>
+            <div class="service-type-selector" id="serviceTypeSelector">
+              <div class="service-type-card selected" data-type="web" onclick="selectServiceType(this)">
+                <div class="icon">🌐</div>
+                <div class="name">Web Service</div>
+                <div class="desc">Public HTTP/HTTPS app</div>
+              </div>
+              <div class="service-type-card" data-type="static" onclick="selectServiceType(this)">
+                <div class="icon">📄</div>
+                <div class="name">Static Site</div>
+                <div class="desc">HTML, JS, CSS, CDN</div>
+              </div>
+              <div class="service-type-card" data-type="worker" onclick="selectServiceType(this)">
+                <div class="icon">⚙️</div>
+                <div class="name">Background Worker</div>
+                <div class="desc">Queues, job processing</div>
+              </div>
+              <div class="service-type-card" data-type="cron" onclick="selectServiceType(this)">
+                <div class="icon">⏰</div>
+                <div class="name">Cron Job</div>
+                <div class="desc">Scheduled scripts</div>
+              </div>
+              <div class="service-type-card" data-type="private" onclick="selectServiceType(this)">
+                <div class="icon">🔒</div>
+                <div class="name">Private Service</div>
+                <div class="desc">Internal only</div>
+              </div>
+              <div class="service-type-card" data-type="docker" onclick="selectServiceType(this)">
+                <div class="icon">🐳</div>
+                <div class="name">Docker</div>
+                <div class="desc">Custom container</div>
+              </div>
+            </div>
+
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+              <h3 style="font-size:18px; font-weight:700; margin-bottom:20px;">⚙️ Configuration</h3>
+              <div class="form-group">
+                <label>GitHub Repository <span style="color:var(--text-muted); font-weight:400;">(public or private)</span></label>
+                <input class="input input-mono" id="svcRepo" placeholder="https://github.com/username/repository">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Branch</label>
+                  <input class="input" id="svcBranch" value="main" placeholder="main">
+                </div>
+                <div class="form-group">
+                  <label>Runtime</label>
+                  <select class="input" id="svcRuntime">
+                    <option value="node">Node.js</option>
+                    <option value="python">Python</option>
+                    <option value="go">Go</option>
+                    <option value="rust">Rust</option>
+                    <option value="ruby">Ruby</option>
+                    <option value="php">PHP</option>
+                    <option value="java">Java/JVM</option>
+                    <option value="static">Static (HTML)</option>
+                    <option value="docker">Docker</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Build Command</label>
+                  <input class="input input-mono" id="svcBuild" placeholder="npm install && npm run build" value="npm install">
+                </div>
+                <div class="form-group">
+                  <label>Start Command</label>
+                  <input class="input input-mono" id="svcStart" placeholder="npm start" value="npm start">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Service Name</label>
+                <input class="input input-mono" id="svcName" placeholder="my-awesome-api">
+                <div class="hint">Will be available at <strong>my-awesome-api.zeuscloud.app</strong></div>
+              </div>
+              <div class="form-group">
+                <label>Region</label>
+                <select class="input" id="svcRegion">
+                  <option value="us-east">🇺🇸 US East (Virginia)</option>
+                  <option value="us-west">🇺🇸 US West (Oregon)</option>
+                  <option value="eu-west">🇪🇺 EU West (Frankfurt)</option>
+                  <option value="eu-central">🇪🇺 EU Central (Warsaw)</option>
+                  <option value="ap-south">🇮🇳 Asia South (Mumbai)</option>
+                  <option value="ap-east">🇸🇬 Asia East (Singapore)</option>
+                  <option value="af-lagos">🇳🇬 Africa (Lagos) <span style="color:var(--gold);">★ Zeus</span></option>
+                  <option value="sa-east">🇧🇷 South America (São Paulo)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Instance Plan</label>
+                <select class="input" id="svcPlan">
+                  <option value="free">Free (512MB RAM, 0.1 CPU) — $0/mo</option>
+                  <option value="starter">Starter (512MB RAM, 0.5 CPU) — $7/mo</option>
+                  <option value="standard" selected>Standard (2GB RAM, 1 CPU) — $25/mo</option>
+                  <option value="pro">Pro (4GB RAM, 2 CPU) — $85/mo</option>
+                  <option value="pro-plus">Pro Plus (8GB RAM, 4 CPU) — $175/mo</option>
+                  <option value="pro-max">Pro Max (16GB RAM, 4 CPU) — $225/mo</option>
+                  <option value="pro-ultra">Pro Ultra (32GB RAM, 8 CPU) — $450/mo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Environment Variables <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
+                <div id="envVarContainer">
+                  <div class="env-row" style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input class="input input-mono env-key" placeholder="KEY" style="flex:1;">
+                    <input class="input input-mono env-val" placeholder="VALUE" style="flex:2;">
+                    <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+                  </div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="addEnvRow()">+ Add Variable</button>
+              </div>
+              <div class="form-group">
+                <label style="display:flex; align-items:center; gap:12px; cursor:pointer;">
+                  <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+                  Auto-deploy on every push
+                </label>
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" onclick="deployService()" style="margin-top:8px;">
+                🚀 Deploy Service
+              </button>
+            </div>
+          </div>
         </div>
-        <button class="btn btn-primary" onclick="deployDocker()" style="font-size: 16px; padding: 14px 40px;">🚀 Deploy Docker</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- URL Shortener Tab (Legacy) -->
-  <div id="tab-shortener" class="section" style="display:none;">
-    <h2 class="section-title">🔗 URL Shortener</h2>
-    <p class="section-subtitle">Shorten your links and track analytics — from the same platform.</p>
-    <div style="text-align: center;">
-      <a href="https://emmyjosh65.github.io/Z-URL/" target="_blank" class="btn btn-primary">Go to URL Shortener →</a>
-    </div>
-  </div>
+        <!-- ===== DASHBOARD: Service Detail ===== -->
+        <div class="dview" id="dview-service-detail" style="display:none;">
+          <div id="serviceDetailContainer">
+            <!-- Populated by JS -->
+          </div>
+        </div>
 
+        <!-- ===== DASHBOARD: Blueprints ===== -->
+        <div class="dview" id="dview-blueprints" style="display:none;">
+          <div class="services-header">
+            <h2>Blueprints (Infrastructure as Code)</h2>
+            <button class="btn btn-primary btn-sm" onclick="showNewBlueprintModal()">+ New Blueprint</button>
+          </div>
+          <div class="stats-row-dash">
+            <div class="stat-card-dash"><div class="value" id="bpCount">0</div><div class="label">Blueprints</div></div>
+            <div class="stat-card-dash"><div class="value" id="bpServices">0</div><div class="label">Services Managed</div></div>
+          </div>
+          <div id="blueprintList">
+            <div class="empty-state">
+              <div class="icon">📋</div>
+              <h3>No blueprints yet</h3>
+              <p>Define your infrastructure in a zeus.yaml file and deploy everything at once.</p>
+              <button class="btn btn-primary" onclick="showNewBlueprintModal()">Create Blueprint</button>
+            </div>
+          </div>
+          <div style="margin-top:24px;">
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:12px;">📄 Example: zeus.yaml</h3>
+            <div class="blueprint-editor">
+              <span class="comment"># Zeus Cloud Blueprint — Infrastructure as Code</span><br>
+              <span class="comment"># Define all your services, databases, env groups in one file</span><br><br>
+              <span class="key">version</span>: <span class="string">"1.0"</span><br>
+              <span class="key">services</span>:<br>
+              <span class="key">&nbsp;&nbsp;- type</span>: <span class="string">web</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span class="string">api</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;env</span>: <span class="string">node</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;region</span>: <span class="string">af-lagos</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span class="string">standard</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;buildCommand</span>: <span class="string">npm install &amp;&amp; npm run build</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;startCommand</span>: <span class="string">node dist/index.js</span><br>
+              <span class="key">&nbsp;&nbsp;- type</span>: <span class="string">static</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span class="string">frontend</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;buildCommand</span>: <span class="string">npm run build</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;publishPath</span>: <span class="string">./dist</span><br>
+              <span class="key">databases</span>:<br>
+              <span class="key">&nbsp;&nbsp;- type</span>: <span class="string">postgres</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span class="string">main-db</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span class="string">standard-2gb</span><br>
+              <span class="key">&nbsp;&nbsp;- type</span>: <span class="string">redis</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;name</span>: <span class="string">cache</span><br>
+              <span class="key">&nbsp;&nbsp;&nbsp;&nbsp;plan</span>: <span class="string">standard-1gb</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== DASHBOARD: Databases ===== -->
+        <div class="dview" id="dview-databases" style="display:none;">
+          <div class="services-header">
+            <h2>Databases</h2>
+            <button class="btn btn-primary btn-sm" onclick="showNewDatabaseModal()">+ New Database</button>
+          </div>
+          <div class="empty-state" id="dbEmpty">
+            <div class="icon">🗄️</div>
+            <h3>No databases</h3>
+            <p>Create a managed PostgreSQL or Redis database.</p>
+            <button class="btn btn-primary" onclick="showNewDatabaseModal()">Create Database</button>
+          </div>
+          <div class="services-grid" id="databaseGrid"></div>
+        </div>
+
+        <!-- ===== DASHBOARD: Env Groups ===== -->
+        <div class="dview" id="dview-envgroups" style="display:none;">
+          <div class="services-header">
+            <h2>Environment Groups</h2>
+            <button class="btn btn-primary btn-sm" onclick="showNewEnvGroupModal()">+ New Group</button>
+          </div>
+          <div class="empty-state">
+            <div class="icon">🔐</div>
+            <h3>No environment groups</h3>
+            <p>Share secrets and configuration across services.</p>
+            <button class="btn btn-primary" onclick="showNewEnvGroupModal()">Create Group</button>
+          </div>
+          <div id="envGroupGrid" class="services-grid"></div>
+        </div>
+
+        <!-- ===== DASHBOARD: Billing ===== -->
+        <div class="dview" id="dview-billing" style="display:none;">
+          <div class="services-header">
+            <h2>Billing & Plans</h2>
+          </div>
+          <div class="billing-plan-card" id="currentPlanCard">
+            <div class="plan-info">
+              <h3 id="billingPlanName">Hobby Plan</h3>
+              <p id="billingPlanDesc">Free forever · 1 web service, 1 static site, 1 cron job</p>
+              <p style="margin-top:8px;">
+                <span class="badge badge-free" id="billingTierBadge">FREE</span>
+                <span style="color:var(--text-muted); font-size:13px; margin-left:8px;" id="billingCodeDisplay"></span>
+              </p>
+            </div>
+            <div class="plan-price" id="billingPlanPrice">$0 <span>/ month</span></div>
+          </div>
+          <div style="margin-top:24px;">
+            <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">Usage This Month</h3>
+            <div style="display:grid; gap:12px;">
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between;">
+                <span>Compute Hours</span>
+                <span><strong>0</strong> / 750 free hours</span>
+              </div>
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between;">
+                <span>Bandwidth</span>
+                <span><strong>0 GB</strong> / 5 GB included</span>
+              </div>
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between;">
+                <span>Build Minutes</span>
+                <span><strong>0</strong> / unlimited</span>
+              </div>
+              <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; display:flex; justify-content:space-between;">
+                <span>Custom Domains</span>
+                <span><strong>0</strong> / 2 included</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:24px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; text-align:center;">
+            <h3 style="font-size:18px; font-weight:700; margin-bottom:8px;">🔑 Unlock More Power</h3>
+            <p style="color:var(--text-secondary); margin-bottom:16px;">Enter your Zeus Premium Code to upgrade instantly.</p>
+            <div style="display:flex; gap:12px; max-width:400px; margin:0 auto;">
+              <input class="input input-mono" id="billingCode" placeholder="ZEUS100 — ZEUS999" style="text-align:center; letter-spacing:2px; font-weight:600;" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+              <button class="btn btn-warning" onclick="activateCode()">Unlock</button>
+            </div>
+            <p style="font-size:13px; color:var(--text-muted); margin-top:12px;">
+              <a href="https://wa.me/2349066760078?text=I%20want%20a%20ZEUS%20Premium%20code" target="_blank">Buy a code from Zeus →</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- ===== DASHBOARD: Audit Logs ===== -->
+        <div class="dview" id="dview-logs" style="display:none;">
+          <div class="services-header">
+            <h2>Audit Logs</h2>
+          </div>
+          <div class="log-viewer" id="auditLogViewer">
+            <div class="line dim"><span class="ts">[2026-07-16T00:00:01Z]</span> Zeus Cloud platform initialized</div>
+            <div class="line dim"><span class="ts">[2026-07-16T00:00:02Z]</span> User authentication system ready</div>
+            <div class="line dim"><span class="ts">[2026-07-16T00:00:03Z]</span> Deployment pipeline online</div>
+          </div>
+        </div>
+
+        <!-- ===== DASHBOARD: Settings ===== -->
+        <div class="dview" id="dview-settings" style="display:none;">
+          <h2 style="font-size:24px; font-weight:800; margin-bottom:24px;">Settings</h2>
+          <div style="max-width:560px;">
+            <div class="card" style="margin-bottom:16px;">
+              <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">Profile</h3>
+              <div class="form-group">
+                <label>Display Name</label>
+                <input class="input" id="settingsName" value="Zeus User">
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input class="input" id="settingsEmail" value="user@zeus.cloud">
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="saveSettings()">Save Changes</button>
+            </div>
+            <div class="card" style="margin-bottom:16px;">
+              <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">Theme</h3>
+              <div style="display:flex; gap:12px;">
+                <button class="btn btn-secondary btn-sm" onclick="setTheme('dark')">🌙 Dark</button>
+                <button class="btn btn-ghost btn-sm" onclick="setTheme('light')">☀️ Light</button>
+                <button class="btn btn-ghost btn-sm" onclick="setTheme('system')">💻 System</button>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:16px;">
+              <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">Workspace</h3>
+              <div class="form-group">
+                <label>Workspace Name</label>
+                <input class="input" value="Personal Workspace">
+              </div>
+              <button class="btn btn-primary btn-sm">Update</button>
+            </div>
+            <div class="card" style="border-color: rgba(239,68,68,0.3);">
+              <h3 style="font-size:16px; font-weight:600; margin-bottom:8px; color:var(--danger);">Danger Zone</h3>
+              <p style="color:var(--text-secondary); font-size:13px; margin-bottom:12px;">Permanently delete your account and all services. This cannot be undone.</p>
+              <button class="btn btn-danger btn-sm" onclick="showToast('Contact Zeus to delete account','warning')">Delete Account</button>
+            </div>
+            <div style="margin-top:20px; text-align:center;">
+              <button class="btn btn-ghost" onclick="logout()">Sign Out</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /page-content -->
+    </div><!-- /main-content -->
+  </div>
 </div>
-
-<!-- PREMIUM CODE MODAL -->
-<div class="modal-overlay" id="premiumModal">
-  <div class="modal">
-    <h2>🔑 Unlock Premium</h2>
-    <p>Enter your Zeus premium code to activate this tier.</p>
-    <div class="form-group">
-      <label>Premium Code</label>
-      <input type="text" id="modalCode" placeholder="ZEUS100 — ZEUS999" oninput="this.value = this.value.toUpperCase()" maxlength="10">
-    </div>
-    <div style="display: flex; gap: 12px;">
-      <button class="btn btn-primary" onclick="activateCodeFromModal()">Activate</button>
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-    </div>
-    <p style="font-size: 13px; color: #666; margin-top: 16px;">
-      No code? <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20to%20buy%20a%20ZEUS%20Premium%20code" target="_blank">Buy from Zeus →</a>
-    </p>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- FOOTER -->
-<footer>
-  <p style="margin-bottom: 8px;">⚡ Z-URL · Built by <a href="https://wa.me/2349066760078" target="_blank">Zeus</a> · +234 906 676 0078</p>
-  <p>GitHub-Powered Deployment Platform · Premium Pass: ZEUS100-ZEUS999</p>
-</footer>
 
 <script>
-  // ===================== STORAGE =====================
-  const DB_KEY = 'zurl_hosting_data';
-  let db = loadDB();
+  // ============================================================
+  // ZEUS CLOUD — Complete Application Logic
+  // ============================================================
 
-  function loadDB() {
-    try {
-      const raw = localStorage.getItem(DB_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch(e) {}
-    return {
-      services: [],
-      deployments: [],
-      premium: { tier: 'free', code: null, activatedAt: null },
-      stats: { totalDeploys: 0, totalVisitors: 0 }
-    };
+  let authUser = null;
+  let currentService = null;
+  let selectedServiceType = 'web';
+  let isSignup = true;
+
+  // ==================== STORAGE ====================
+  const DB = {
+    get(key, def) {
+      try { const d = localStorage.getItem('zc_' + key); return d ? JSON.parse(d) : def; }
+      catch(e) { return def; }
+    },
+    set(key, val) { localStorage.setItem('zc_' + key, JSON.stringify(val)); },
+    remove(key) { localStorage.removeItem('zc_' + key); }
+  };
+
+  // ==================== INIT ====================
+  function init() {
+    authUser = DB.get('user', null);
+    if (authUser) {
+      showDashboard();
+    } else {
+      // Check URL for auto-login
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('auto') === 'true') {
+        autoCreateAccount();
+      } else {
+        showLanding();
+      }
+    }
+    updateAllBadges();
   }
 
-  function saveDB() {
-    localStorage.setItem(DB_KEY, JSON.stringify(db));
-  }
-
-  // ===================== NAVIGATION =====================
-  function showTab(tabId) {
-    const tabs = ['features', 'pricing', 'dashboard', 'deploy', 'shortener'];
-    tabs.forEach(t => {
-      const el = document.getElementById('tab-' + t);
-      if (el) el.style.display = t === tabId ? 'block' : 'none';
+  // ==================== VIEW MANAGEMENT ====================
+  function hideAllViews() {
+    ['view-landing','view-auth','view-dashboard'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
     });
-    if (tabId === 'dashboard') refreshDashboard();
-    window.scrollTo(0, 0);
   }
 
-  // ===================== DEPLOY TABS =====================
-  function switchDeployTab(tab) {
-    document.querySelectorAll('[data-deploytab]').forEach(t => t.classList.remove('active'));
-    document.querySelector(`[data-deploytab="${tab}"]`).classList.add('active');
-    document.querySelectorAll('.deploy-tab-content').forEach(c => c.style.display = 'none');
-    document.getElementById('deploy-' + tab).style.display = 'block';
+  function showLanding() {
+    hideAllViews();
+    document.getElementById('view-landing').style.display = 'block';
+    window.scrollTo(0,0);
+    history.replaceState(null, '', window.location.pathname);
   }
 
-  // ===================== ENV VARS =====================
-  function addEnvVar(keyVal, valVal) {
-    const container = document.getElementById('envVars');
-    const row = document.createElement('div');
-    row.className = 'env-row';
-    row.innerHTML = `
-      <input type="text" placeholder="KEY" class="env-key" value="${keyVal || ''}">
-      <input type="text" placeholder="VALUE" class="env-val" value="${valVal || ''}">
+  function showAuth() {
+    hideAllViews();
+    document.getElementById('view-auth').style.display = 'flex';
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+    document.getElementById('authError').classList.remove('show');
+    document.getElementById('authError').textContent = '';
+    window.scrollTo(0,0);
+  }
+
+  function showDashboard() {
+    hideAllViews();
+    document.getElementById('view-dashboard').style.display = 'block';
+    if (authUser) {
+      document.getElementById('sidebarName').textContent = authUser.name || 'User';
+      document.getElementById('sidebarEmail').textContent = authUser.email || 'user@zeus.cloud';
+      document.getElementById('sidebarAvatar').textContent = (authUser.name || 'U')[0].toUpperCase();
+    }
+    switchDashboardView('services');
+    updateAllBadges();
+    window.scrollTo(0,0);
+  }
+
+  // ==================== AUTH ====================
+  function toggleAuthMode() {
+    isSignup = !isSignup;
+    document.getElementById('authBtn').textContent = isSignup ? 'Create Account' : 'Sign In';
+    document.getElementById('authToggle').innerHTML = isSignup
+      ? 'Already have an account? <a href="#" onclick="toggleAuthMode()">Sign in</a>'
+      : 'Don\'t have an account? <a href="#" onclick="toggleAuthMode()">Create one</a>';
+  }
+
+  function authWithEmail() {
+    const email = document.getElementById('authEmail').value.trim();
+    const pass = document.getElementById('authPassword').value.trim();
+    const errEl = document.getElementById('authError');
+
+    if (!email || !pass) {
+      errEl.textContent = 'Please fill in all fields.';
+      errEl.classList.add('show'); return;
+    }
+    if (pass.length < 4) {
+      errEl.textContent = 'Password must be at least 4 characters.';
+      errEl.classList.add('show'); return;
+    }
+
+    errEl.classList.remove('show');
+    authUser = {
+      id: 'user_' + Date.now().toString(36),
+      email: email,
+      name: email.split('@')[0],
+      createdAt: new Date().toISOString(),
+      authMethod: 'email'
+    };
+    DB.set('user', authUser);
+    showToast('✅ Welcome to Zeus Cloud, ' + authUser.name + '!', 'success');
+    showDashboard();
+  }
+
+  function authWithGithub() {
+    authUser = {
+      id: 'gh_' + Date.now().toString(36),
+      email: 'dev_' + Date.now().toString(36).substr(0,6) + '@github.zeus',
+      name: 'GitHub Dev ' + Date.now().toString(36).substr(0,4).toUpperCase(),
+      authMethod: 'github',
+      avatar: '🐙'
+    };
+    DB.set('user', authUser);
+    showToast('✅ Connected with GitHub!', 'success');
+    showDashboard();
+  }
+
+  function authWithGoogle() {
+    authUser = {
+      id: 'gl_' + Date.now().toString(36),
+      email: 'user_' + Date.now().toString(36).substr(0,6) + '@gmail.zeus',
+      name: 'Zeus User ' + Date.now().toString(36).substr(0,4).toUpperCase(),
+      authMethod: 'google',
+      avatar: '📧'
+    };
+    DB.set('user', authUser);
+    showToast('✅ Connected with Google!', 'success');
+    showDashboard();
+  }
+
+  function autoCreateAccount() {
+    authUser = {
+      id: 'auto_' + Date.now().toString(36),
+      email: 'builder_' + Date.now().toString(36).substr(0,6) + '@zeus.cloud',
+      name: 'Builder ' + Date.now().toString(36).substr(0,4).toUpperCase(),
+      createdAt: new Date().toISOString(),
+      authMethod: 'auto'
+    };
+    DB.set('user', authUser);
+    showToast('⚡ Auto-login successful!', 'success');
+    showDashboard();
+  }
+
+  function logout() {
+    if (confirm('Sign out of Zeus Cloud?')) {
+      DB.remove('user');
+      authUser = null;
+      showLanding();
+      showToast('Signed out', 'info');
+    }
+  }
+
+  function saveSettings() {
+    if (authUser) {
+      authUser.name = document.getElementById('settingsName').value || authUser.name;
+      authUser.email = document.getElementById('settingsEmail').value || authUser.email;
+      DB.set('user', authUser);
+      showToast('Settings saved!', 'success');
+    }
+  }
+
+  function setTheme(theme) {
+    DB.set('theme', theme);
+    if (theme === 'light') {
+      document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+    } else {
+      document.documentElement.style.filter = '';
+    }
+    showToast('Theme: ' + theme, 'info');
+  }
+
+  // ==================== DASHBOARD VIEWS ====================
+  function switchDashboardView(view) {
+    document.querySelectorAll('.dview').forEach(v => v.style.display = 'none');
+    const target = document.getElementById('dview-' + view);
+    if (target) target.style.display = 'block';
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navItem = document.querySelector(`.nav-item[data-dview="${view}"]`);
+    if (navItem) navItem.classList.add('active');
+
+    const names = {
+      'services': 'Services',
+      'new-service': 'New Service',
+      'service-detail': 'Service Detail',
+      'blueprints': 'Blueprints',
+      'databases': 'Databases',
+      'envgroups': 'Environment Groups',
+      'billing': 'Billing',
+      'logs': 'Audit Logs',
+      'settings': 'Settings'
+    };
+    document.getElementById('breadcrumbCurrent').textContent = names[view] || view;
+
+    if (view === 'services') refreshServices();
+    if (view === 'billing') refreshBilling();
+    if (view === 'blueprints') refreshBlueprints();
+    if (view === 'databases') refreshDatabases();
+    if (view === 'envgroups') refreshEnvGroups();
+
+    updateAllBadges();
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // ==================== SERVICES ====================
+  function getServices() { return DB.get('services', []); }
+  function saveServices(s) { DB.set('services', s); }
+
+  function selectServiceType(el) {
+    document.querySelectorAll('.service-type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedServiceType = el.dataset.type;
+  }
+
+  function addEnvRow(key, val) {
+    const c = document.getElementById('envVarContainer');
+    const r = document.createElement('div');
+    r.className = 'env-row';
+    r.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+    r.innerHTML = `
+      <input class="input input-mono" placeholder="KEY" style="flex:1;" value="${key || ''}">
+      <input class="input input-mono" placeholder="VALUE" style="flex:2;" value="${val || ''}">
       <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
     `;
-    container.appendChild(row);
+    c.appendChild(r);
   }
 
-  // ===================== GET ENV VARS =====================
   function getEnvVars() {
     const vars = {};
     document.querySelectorAll('.env-row').forEach(row => {
-      const key = row.querySelector('.env-key').value.trim();
-      const val = row.querySelector('.env-val').value.trim();
-      if (key) vars[key] = val;
+      const k = row.querySelector('.env-key, input:first-child').value.trim();
+      const v = row.querySelector('.env-val, input:nth-child(2)').value.trim();
+      if (k) vars[k] = v;
     });
     return vars;
   }
 
-  // ===================== GENERATE ID =====================
-  function genId() {
-    return 'svc-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
-  }
-
-  // ===================== SIMULATE BUILD LOGS =====================
-  function simulateBuild(serviceId, serviceName, repoUrl, branch, runtime, buildCmd, startCmd) {
-    const steps = [
-      { msg: `[Z-URL] Initializing deployment for ${serviceName}...`, delay: 300, type: 'info' },
-      { msg: `[Git] Cloning ${repoUrl} (branch: ${branch})...`, delay: 800, type: '' },
-      { msg: `[Git] Repository cloned successfully.`, delay: 400, type: '' },
-      { msg: `[Build] Detected runtime: ${runtime}`, delay: 300, type: 'info' },
-      { msg: `[Build] Running build command: ${buildCmd}`, delay: 500, type: '' },
-      { msg: `[Build] Installing dependencies...`, delay: 1000, type: '' },
-      { msg: `[Build] Dependencies installed (${Math.floor(Math.random() * 50) + 10} packages)`, delay: 400, type: '' },
-      { msg: `[Build] Build completed successfully.`, delay: 300, type: '' },
-      { msg: `[Deploy] Starting application with: ${startCmd}`, delay: 500, type: '' },
-      { msg: `[Deploy] Application started on port ${Math.floor(Math.random() * 9000) + 3000}`, delay: 600, type: '' },
-      { msg: `[Z-URL] ✅ ${serviceName} is LIVE at https://${serviceName}.zurl.app`, delay: 500, type: 'success' },
-    ];
-
-    let totalDelay = 0;
-    steps.forEach((step, i) => {
-      totalDelay += step.delay;
-      setTimeout(() => {
-        addLog(step.msg, step.type || '');
-        if (i === steps.length - 1) {
-          // Mark service as running
-          const svc = db.services.find(s => s.id === serviceId);
-          if (svc) {
-            svc.status = 'running';
-            svc.lastDeployed = new Date().toISOString();
-            db.stats.totalDeploys = (db.stats.totalDeploys || 0) + 1;
-            saveDB();
-            refreshDashboard();
-          }
-        }
-      }, totalDelay);
-    });
-
-    // Mark as building immediately
-    const svc = db.services.find(s => s.id === serviceId);
-    if (svc) {
-      svc.status = 'building';
-      svc.buildLog = svc.buildLog || [];
-      saveDB();
-      refreshDashboard();
-    }
-  }
-
-  function addLog(msg, type) {
-    const viewer = document.getElementById('logViewer');
-    if (!viewer) return;
-    const line = document.createElement('div');
-    line.className = 'log-line';
-    if (type) line.classList.add(type);
-    line.textContent = msg;
-    viewer.appendChild(line);
-    viewer.scrollTop = viewer.scrollHeight;
-  }
-
-  // ===================== DEPLOY SERVICE =====================
   function deployService() {
-    const repoUrl = document.getElementById('repoUrl').value.trim();
-    const branch = document.getElementById('branch').value.trim() || 'main';
-    const runtime = document.getElementById('runtime').value;
-    const buildCmd = document.getElementById('buildCmd').value.trim();
-    const startCmd = document.getElementById('startCmd').value.trim();
-    const serviceName = document.getElementById('serviceName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const repo = document.getElementById('svcRepo').value.trim();
+    const branch = document.getElementById('svcBranch').value.trim() || 'main';
+    const runtime = document.getElementById('svcRuntime').value;
+    const buildCmd = document.getElementById('svcBuild').value.trim();
+    const startCmd = document.getElementById('svcStart').value.trim();
+    const name = document.getElementById('svcName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const region = document.getElementById('svcRegion').value;
+    const plan = document.getElementById('svcPlan').value;
 
-    if (!repoUrl) { showToast('Please enter a GitHub repository URL', 'error'); return; }
-    if (!serviceName) { showToast('Please enter a service name', 'error'); return; }
+    if (!repo) { showToast('Please enter a GitHub repository URL', 'error'); return; }
+    if (!name) { showToast('Please enter a service name', 'error'); return; }
 
-    const id = genId();
+    const svcType = selectedServiceType;
     const env = getEnvVars();
 
+    const planNames = {
+      'free': { ram: '512MB', cpu: '0.1', price: 0 },
+      'starter': { ram: '512MB', cpu: '0.5', price: 7 },
+      'standard': { ram: '2GB', cpu: '1', price: 25 },
+      'pro': { ram: '4GB', cpu: '2', price: 85 },
+      'pro-plus': { ram: '8GB', cpu: '4', price: 175 },
+      'pro-max': { ram: '16GB', cpu: '4', price: 225 },
+      'pro-ultra': { ram: '32GB', cpu: '8', price: 450 }
+    };
+    const p = planNames[plan] || planNames.free;
+
+    const tier = DB.get('premium', {}).tier || 'free';
+    const ramMap = { premium: '2GB', business: '4GB', elite: '8GB', free: p.ram };
+
     const service = {
-      id,
-      name: serviceName,
-      repo: repoUrl,
+      id: 'svc-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2,4),
+      name,
+      type: svcType,
+      repo,
       branch,
       runtime,
       buildCmd: buildCmd || '(none)',
       startCmd: startCmd || '(none)',
       env,
-      status: 'queued',
-      url: `https://${serviceName}.zurl.app`,
+      region,
+      plan,
+      ram: ramMap[tier] || p.ram,
+      cpu: p.cpu,
+      status: 'building',
+      url: `https://${name}.zeuscloud.app`,
       createdAt: new Date().toISOString(),
       lastDeployed: null,
-      tier: db.premium.tier || 'free',
-      uptime: '0%',
-      ram: db.premium.tier === 'premium' ? '2 GB' : db.premium.tier === 'business' ? '4 GB' : db.premium.tier === 'elite' ? '8 GB' : '512 MB'
+      tier,
+      deployCount: 0
     };
 
-    db.services.push(service);
-    db.stats.totalDeploys = (db.stats.totalDeploys || 0) + 1;
-    saveDB();
+    const services = getServices();
+    services.push(service);
+    saveServices(services);
 
-    // Save to existing repos
-    const existingRepos = JSON.parse(localStorage.getItem('zurl_existing_repos') || '[]');
-    if (!existingRepos.find(r => r.url === repoUrl)) {
-      existingRepos.push({ url: repoUrl, branch, runtime, buildCmd, startCmd, name: serviceName });
-      localStorage.setItem('zurl_existing_repos', JSON.stringify(existingRepos));
-    }
+    showToast(`🚀 Deploying ${name}...`, 'success');
+    switchDashboardView('services');
 
-    // Clear form
-    document.getElementById('repoUrl').value = '';
-    document.getElementById('serviceName').value = '';
-
-    showToast(`🚀 Deploying ${serviceName}...`, 'success');
-    showTab('dashboard');
-
-    // Start build simulation
-    setTimeout(() => {
-      simulateBuild(id, serviceName, repoUrl, branch, runtime, buildCmd || 'echo "no build command"', startCmd || 'echo "no start command"');
-    }, 500);
+    // Simulate build
+    let progress = 0;
+    const buildInterval = setInterval(() => {
+      progress += Math.random() * 15 + 5;
+      if (progress >= 100) {
+        clearInterval(buildInterval);
+        const svcs = getServices();
+        const s = svcs.find(x => x.id === service.id);
+        if (s) {
+          s.status = 'live';
+          s.lastDeployed = new Date().toISOString();
+          s.deployCount = (s.deployCount || 0) + 1;
+          saveServices(svcs);
+          refreshServices();
+          showToast(`✅ ${name} is now LIVE at ${s.url}`, 'success');
+          addAuditLog(`Service ${name} deployed successfully`);
+        }
+      }
+      refreshServices();
+    }, 400);
   }
 
-  // ===================== DEPLOY DOCKER =====================
-  function deployDocker() {
-    const repoUrl = document.getElementById('dockerRepoUrl').value.trim();
-    const branch = document.getElementById('dockerBranch').value.trim() || 'main';
-    const dockerfile = document.getElementById('dockerfilePath').value.trim() || 'Dockerfile';
-    const serviceName = document.getElementById('dockerServiceName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+  function refreshServices() {
+    const services = getServices();
+    const grid = document.getElementById('servicesGrid');
+    const empty = document.getElementById('servicesEmpty');
+    const stats = document.getElementById('servicesStats');
 
-    if (!repoUrl) { showToast('Please enter a GitHub repository URL', 'error'); return; }
-    if (!serviceName) { showToast('Please enter a service name', 'error'); return; }
+    const total = services.length;
+    const live = services.filter(s => s.status === 'live').length;
+    const building = services.filter(s => s.status === 'building' || s.status === 'queued').length;
+    const deploys = services.reduce((a, s) => a + (s.deployCount || 0), 0);
 
-    document.getElementById('repoUrl').value = repoUrl;
-    document.getElementById('branch').value = branch;
-    document.getElementById('runtime').value = 'docker';
-    document.getElementById('buildCmd').value = `docker build -f ${dockerfile} -t ${serviceName} .`;
-    document.getElementById('startCmd').value = `docker run -p 80:80 ${serviceName}`;
-    document.getElementById('serviceName').value = serviceName;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statLive').textContent = live;
+    document.getElementById('statBuilding').textContent = building;
+    document.getElementById('statDeploys').textContent = deploys;
+    document.getElementById('sidebarServiceCount').textContent = total;
 
-    switchDeployTab('new');
-    deployService();
-  }
-
-  // ===================== EXISTING REPOS =====================
-  function fillExistingRepo() {
-    const sel = document.getElementById('existingRepo');
-    const details = document.getElementById('existingRepoDetails');
-    if (sel.value) {
-      details.style.display = 'block';
-      const data = JSON.parse(sel.value);
-      document.getElementById('repoUrl').value = data.url;
-      document.getElementById('branch').value = data.branch;
-      document.getElementById('runtime').value = data.runtime;
-      document.getElementById('buildCmd').value = data.buildCmd || '';
-      document.getElementById('startCmd').value = data.startCmd || '';
-      document.getElementById('serviceName').value = data.name || '';
-    } else {
-      details.style.display = 'none';
-    }
-  }
-
-  function redeployExisting() {
-    const sel = document.getElementById('existingRepo');
-    if (!sel.value) { showToast('Select a repo first', 'error'); return; }
-    const data = JSON.parse(sel.value);
-    document.getElementById('repoUrl').value = data.url;
-    document.getElementById('branch').value = data.branch;
-    document.getElementById('runtime').value = data.runtime;
-    document.getElementById('buildCmd').value = data.buildCmd || '';
-    document.getElementById('startCmd').value = data.startCmd || '';
-    document.getElementById('serviceName').value = (data.name || 'my-app') + '-' + Date.now().toString(36);
-    switchDeployTab('new');
-    showToast('Settings loaded. Click Deploy Now.', 'success');
-  }
-
-  function loadExistingRepos() {
-    const existingRepos = JSON.parse(localStorage.getItem('zurl_existing_repos') || '[]');
-    const sel = document.getElementById('existingRepo');
-    sel.innerHTML = '<option value="">— Select a repo —</option>';
-    existingRepos.forEach(r => {
-      const opt = document.createElement('option');
-      opt.value = JSON.stringify(r);
-      opt.textContent = r.name || r.url.split('/').pop();
-      sel.appendChild(opt);
-    });
-  }
-
-  // ===================== DASHBOARD =====================
-  function refreshDashboard() {
-    const services = db.services || [];
-    const running = services.filter(s => s.status === 'running');
-    const building = services.filter(s => s.status === 'building');
-
-    document.getElementById('statServices').textContent = services.length;
-    document.getElementById('statRunning').textContent = running.length;
-    document.getElementById('statDeploys').textContent = db.stats.totalDeploys || 0;
-    document.getElementById('statVisitors').textContent = db.stats.totalVisitors || 0;
-
-    const tbody = document.getElementById('servicesBody');
-    if (services.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #666;">No services yet. <a href="#" onclick="showTab('deploy')" style="color:#7c7cff;">Deploy your first one →</a></td></tr>`;
+    if (total === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      stats.style.display = 'none';
       return;
     }
 
-    tbody.innerHTML = services.map(s => {
-      const statusClass = s.status === 'running' ? 'status-running' : s.status === 'building' ? 'status-building' : 'status-failed';
-      const statusLabel = s.status.charAt(0).toUpperCase() + s.status.slice(1);
-      const uptime = s.status === 'running' ? '99.9%' : '0%';
-      return `<tr>
-        <td><strong>${s.name}</strong></td>
-        <td style="font-size:13px; color:#888;">${s.repo.split('/').pop()}</td>
-        <td>${s.branch}</td>
-        <td><span class="${statusClass}">${statusLabel}</span></td>
-        <td><a href="${s.url}" target="_blank" style="font-size:13px;">${s.name}.zurl.app ↗</a></td>
-        <td>${s.ram}</td>
-        <td>${uptime}</td>
-        <td>
-          <button class="btn btn-sm ${s.status === 'running' ? 'btn-danger' : 'btn-primary'}" onclick="${s.status === 'running' ? `stopService('${s.id}')` : `restartService('${s.id}')`}">
-            ${s.status === 'running' ? 'Stop' : 'Restart'}
-          </button>
-          <button class="btn btn-sm btn-outline" style="margin-left:4px;" onclick="viewLogs('${s.id}')">Logs</button>
-          <button class="btn btn-sm btn-outline" style="margin-left:4px;" onclick="deleteService('${s.id}')" title="Delete">🗑️</button>
-        </td>
-      </tr>`;
-    }).join('');
+    empty.style.display = 'none';
+    stats.style.display = 'grid';
 
-    updateBuildLogs();
-    loadExistingRepos();
-    updatePricingDisplay();
+    grid.innerHTML = services.slice().reverse().map(s => {
+      const statusClass = s.status === 'live' ? 'status-live' : s.status === 'building' ? 'status-building' : 'status-failed';
+      const statusLabel = s.status.charAt(0).toUpperCase() + s.status.slice(1);
+      const typeIcons = { web:'🌐', static:'📄', worker:'⚙️', cron:'⏰', private:'🔒', docker:'🐳' };
+      const typeIcon = typeIcons[s.type] || '📦';
+      const regionNames = { 'us-east':'🇺🇸','us-west':'🇺🇸','eu-west':'🇪🇺','af-lagos':'🇳🇬','ap-south':'🇮🇳','ap-east':'🇸🇬','sa-east':'🇧🇷' };
+      const regionFlag = regionNames[s.region] || '🌍';
+
+      return `
+        <div class="service-card" onclick="showServiceDetail('${s.id}')">
+          <div class="top">
+            <div class="name">${typeIcon} ${s.name}</div>
+            <div class="status ${statusClass}">${statusLabel}</div>
+          </div>
+          <div class="url">${s.url}</div>
+          <div class="meta">
+            <span>${regionFlag} ${s.region}</span>
+            <span>💾 ${s.ram}</span>
+            <span>⚡ ${s.cpu} CPU</span>
+            <span>📦 ${s.type}</span>
+          </div>
+          <div class="actions" onclick="event.stopPropagation()">
+            ${s.status === 'live' ? `<button class="btn btn-danger btn-sm" onclick="stopService('${s.id}')">⏹ Stop</button>` : ''}
+            ${s.status !== 'live' ? `<button class="btn btn-primary btn-sm" onclick="restartService('${s.id}')">🔄 Restart</button>` : ''}
+            <button class="btn btn-ghost btn-sm" onclick="viewServiceLogs('${s.id}')">📋 Logs</button>
+            <button class="btn btn-ghost btn-sm" onclick="deleteService('${s.id}')">🗑️</button>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   function stopService(id) {
-    const svc = db.services.find(s => s.id === id);
-    if (svc) {
-      svc.status = 'stopped';
-      saveDB();
-      refreshDashboard();
-      showToast(`🛑 ${svc.name} stopped`, 'warning');
+    const services = getServices();
+    const s = services.find(x => x.id === id);
+    if (s) {
+      s.status = 'stopped';
+      saveServices(services);
+      refreshServices();
+      showToast(`🛑 ${s.name} stopped`, 'warning');
+      addAuditLog(`Service ${s.name} stopped`);
     }
   }
 
   function restartService(id) {
-    const svc = db.services.find(s => s.id === id);
-    if (svc) {
-      svc.status = 'building';
-      saveDB();
-      refreshDashboard();
-      showToast(`🔄 Restarting ${svc.name}...`, 'success');
+    const services = getServices();
+    const s = services.find(x => x.id === id);
+    if (s) {
+      s.status = 'building';
+      saveServices(services);
+      refreshServices();
+      showToast(`🔄 Restarting ${s.name}...`, 'info');
       setTimeout(() => {
-        svc.status = 'running';
-        addLog(`[Z-URL] ✅ ${svc.name} restarted successfully`, '');
-        saveDB();
-        refreshDashboard();
+        const svcs = getServices();
+        const svc = svcs.find(x => x.id === id);
+        if (svc) { svc.status = 'live'; svc.lastDeployed = new Date().toISOString(); saveServices(svcs); refreshServices(); }
+        showToast(`✅ ${s.name} is running`, 'success');
       }, 2000);
     }
   }
 
   function deleteService(id) {
-    if (!confirm('Delete this service? This cannot be undone.')) return;
-    db.services = db.services.filter(s => s.id !== id);
-    saveDB();
-    refreshDashboard();
-    showToast('Service deleted', 'warning');
+    if (!confirm('Delete this service permanently?')) return;
+    let services = getServices();
+    const s = services.find(x => x.id === id);
+    services = services.filter(x => x.id !== id);
+    saveServices(services);
+    refreshServices();
+    if (s) showToast(`🗑️ ${s.name} deleted`, 'warning');
   }
 
-  function viewLogs(id) {
-    const svc = db.services.find(s => s.id === id);
-    if (!svc) return;
-    const viewer = document.getElementById('logViewer');
-    viewer.innerHTML = '';
-    addLog(`[Z-URL] === Logs for ${svc.name} ===`, 'info');
-    addLog(`[Repo] ${svc.repo} (${svc.branch})`, '');
-    addLog(`[Runtime] ${svc.runtime}`, '');
-    addLog(`[Build] ${svc.buildCmd}`, '');
-    addLog(`[Start] ${svc.startCmd}`, '');
-    addLog(`[Status] ${svc.status}`, svc.status === 'running' ? 'success' : svc.status === 'failed' ? 'error' : '');
-    addLog(`[URL] ${svc.url}`, 'info');
-    if (svc.status === 'running') {
-      addLog(`[Uptime] Service is healthy ✅`, '');
+  // ==================== SERVICE DETAIL ====================
+  function showServiceDetail(id) {
+    const services = getServices();
+    const s = services.find(x => x.id === id);
+    if (!s) { showToast('Service not found', 'error'); return; }
+
+    currentService = s;
+    const container = document.getElementById('serviceDetailContainer');
+    const statusClass = s.status === 'live' ? 'status-live' : s.status === 'building' ? 'status-building' : 'status-failed';
+    const statusLabel = s.status.charAt(0).toUpperCase() + s.status.slice(1);
+    const typeIcons = { web:'🌐', static:'📄', worker:'⚙️', cron:'⏰', private:'🔒', docker:'🐳' };
+
+    container.innerHTML = `
+      <div class="service-detail-header">
+        <div class="info">
+          <h1>${typeIcons[s.type] || '📦'} ${s.name}</h1>
+          <div class="url">${s.url}</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="status ${statusClass}">${statusLabel}</span>
+          <button class="btn btn-ghost btn-sm" onclick="switchDashboardView('services')">← Back</button>
+          ${s.status === 'live' ? `<button class="btn btn-danger btn-sm" onclick="stopService('${s.id}');switchDashboardView('services')">⏹ Stop</button>` : ''}
+          ${s.status !== 'live' ? `<button class="btn btn-primary btn-sm" onclick="restartService('${s.id}');switchDashboardView('services')">🔄 Restart</button>` : ''}
+          <button class="btn btn-ghost btn-sm" onclick="deleteService('${s.id}');switchDashboardView('services')">🗑️</button>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <button class="detail-tab active" onclick="switchDetailTab(this,'overview')">Overview</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'logs')">Logs</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'env')">Environment</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'deploys')">Deploy History</button>
+      </div>
+
+      <div id="detail-overview">
+        <div class="stats-row-dash">
+          <div class="stat-card-dash"><div class="value" style="color:var(--success);">${s.status === 'live' ? 'Live' : s.status}</div><div class="label">Status</div></div>
+          <div class="stat-card-dash"><div class="value">${s.ram}</div><div class="label">Memory</div></div>
+          <div class="stat-card-dash"><div class="value">${s.cpu} CPU</div><div class="label">Compute</div></div>
+          <div class="stat-card-dash"><div class="value">${s.deployCount || 0}</div><div class="label">Deployments</div></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Configuration</h3>
+          <div style="display:grid; gap:12px; font-size:14px;">
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Repository</span><span style="font-family:var(--font-mono);">${s.repo}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Branch</span><span>${s.branch}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Runtime</span><span>${s.runtime}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Build Command</span><span style="font-family:var(--font-mono);font-size:13px;">${s.buildCmd}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Start Command</span><span style="font-family:var(--font-mono);font-size:13px;">${s.startCmd}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text-muted);">Region</span><span>${s.region}</span></div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="color:var(--text-muted);">Created</span><span>${new Date(s.createdAt).toLocaleString()}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="detail-logs" style="display:none;">
+        <div class="log-viewer" id="serviceLogViewer">
+          <div class="line dim"><span class="ts">[Init]</span> Service ${s.name} created</div>
+          <div class="line dim"><span class="ts">[Build]</span> Repository cloned from ${s.repo}</div>
+          ${s.buildCmd !== '(none)' ? `<div class="line dim"><span class="ts">[Build]</span> Running: ${s.buildCmd}</div>` : ''}
+          ${s.status === 'live' ? `<div class="line success"><span class="ts">[Deploy]</span> ✅ Service is LIVE at ${s.url}</div>` : `<div class="line warn"><span class="ts">[Deploy]</span> ⏳ Building...</div>`}
+          <div class="line dim"><span class="ts">[Health]</span> Monitoring active · 0 incidents</div>
+        </div>
+      </div>
+
+      <div id="detail-env" style="display:none;">
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Environment Variables</h3>
+          ${Object.keys(s.env || {}).length === 0 ? '<p style="color:var(--text-muted);">No environment variables set.</p>' :
+            Object.entries(s.env || {}).map(([k,v]) => `
+              <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-size:13px;">
+                <span style="color:var(--accent);">${k}</span>
+                <span style="color:var(--text-muted);">${'•'.repeat(Math.min(v.length, 20))}</span>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+
+      <div id="detail-deploys" style="display:none;">
+        <div class="card">
+          <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Deployment History</h3>
+          <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">
+            <span>#${s.deployCount || 1}</span>
+            <span style="color:var(--text-muted);">${s.lastDeployed ? new Date(s.lastDeployed).toLocaleString() : 'Deploying...'}</span>
+            <span class="status ${s.status === 'live' ? 'status-live' : 'status-building'}" style="font-size:12px;">${s.status === 'live' ? 'Success' : 'In Progress'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    switchDashboardView('service-detail');
+  }
+
+  function switchDetailTab(el, tab) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    ['overview','logs','env','deploys'].forEach(t => {
+      document.getElementById('detail-' + t).style.display = t === tab ? 'block' : 'none';
+    });
+  }
+
+  function viewServiceLogs(id) {
+    const services = getServices();
+    const s = services.find(x => x.id === id);
+    if (s) showServiceDetail(id);
+  }
+
+  // ==================== BLUEPRINTS ====================
+  function refreshBlueprints() {
+    const bps = DB.get('blueprints', []);
+    document.getElementById('bpCount').textContent = bps.length;
+    document.getElementById('bpServices').textContent = bps.reduce((a, b) => a + (b.serviceCount || 0), 0);
+  }
+
+  function showNewBlueprintModal() {
+    showModal(
+      '📋 New Blueprint',
+      'Connect a GitHub repo with a zeus.yaml file to deploy your entire infrastructure at once.',
+      `<div class="form-group">
+        <label>GitHub Repository</label>
+        <input class="input input-mono" id="bpRepo" placeholder="https://github.com/username/repo-with-zeus-yaml">
+      </div>
+      <div class="form-group">
+        <label>Branch</label>
+        <input class="input" id="bpBranch" value="main">
+      </div>
+      <div class="form-group">
+        <label>Blueprint File Path</label>
+        <input class="input input-mono" id="bpPath" value="zeus.yaml">
+        <div class="hint">Path to your YAML file in the repository</div>
+      </div>`,
+      () => {
+        const repo = document.getElementById('bpRepo').value.trim();
+        if (!repo) { showToast('Enter a repository URL', 'error'); return; }
+        const bps = DB.get('blueprints', []);
+        bps.push({
+          id: 'bp-' + Date.now().toString(36),
+          repo,
+          branch: document.getElementById('bpBranch').value || 'main',
+          path: document.getElementById('bpPath').value || 'zeus.yaml',
+          serviceCount: Math.floor(Math.random() * 8) + 2,
+          createdAt: new Date().toISOString(),
+          status: 'connected'
+        });
+        DB.set('blueprints', bps);
+        refreshBlueprints();
+        closeModal();
+        showToast('✅ Blueprint connected! Services syncing...', 'success');
+      }
+    );
+  }
+
+  // ==================== DATABASES ====================
+  function refreshDatabases() {
+    const dbs = DB.get('databases', []);
+    const grid = document.getElementById('databaseGrid');
+    const empty = document.getElementById('dbEmpty');
+
+    if (dbs.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
     }
-    showToast('📋 Logs loaded in viewer', 'success');
+    empty.style.display = 'none';
+    grid.innerHTML = dbs.map(d => `
+      <div class="service-card">
+        <div class="top">
+          <div class="name">${d.type === 'postgres' ? '🗄️' : '⚡'} ${d.name}</div>
+          <div class="status status-live" style="font-size:12px;">Live</div>
+        </div>
+        <div class="meta" style="margin-top:8px;">
+          <span>📦 ${d.plan}</span>
+          <span>🔗 ${d.host || 'zeusdb.internal'}</span>
+        </div>
+      </div>
+    `).join('');
   }
 
-  function updateBuildLogs() {
-    const services = db.services || [];
-    if (services.length === 0) return;
-    const latest = services[services.length - 1];
-    if (latest.status === 'running' || latest.status === 'building') {
-      // Logs are streaming
+  function showNewDatabaseModal() {
+    showModal(
+      '🗄️ New Database',
+      'Create a managed database for your services.',
+      `<div class="form-group">
+        <label>Database Type</label>
+        <select class="input" id="dbType">
+          <option value="postgres">PostgreSQL</option>
+          <option value="redis">Redis / Key Value</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input class="input" id="dbName" placeholder="my-database">
+      </div>
+      <div class="form-group">
+        <label>Plan</label>
+        <select class="input" id="dbPlan">
+          <option value="free">Free (256MB) — $0/mo</option>
+          <option value="starter">Starter (1GB) — $10/mo</option>
+          <option value="standard">Standard (2GB) — $25/mo</option>
+          <option value="pro">Pro (4GB) — $85/mo</option>
+        </select>
+      </div>`,
+      () => {
+        const name = document.getElementById('dbName').value.trim();
+        if (!name) { showToast('Enter a database name', 'error'); return; }
+        const dbs = DB.get('databases', []);
+        dbs.push({
+          id: 'db-' + Date.now().toString(36),
+          name,
+          type: document.getElementById('dbType').value,
+          plan: document.getElementById('dbPlan').value,
+          host: name + '.zeusdb.internal',
+          createdAt: new Date().toISOString()
+        });
+        DB.set('databases', dbs);
+        refreshDatabases();
+        closeModal();
+        showToast('✅ Database created!', 'success');
+      }
+    );
+  }
+
+  // ==================== ENV GROUPS ====================
+  function refreshEnvGroups() {
+    const groups = DB.get('envgroups', []);
+    const grid = document.getElementById('envGroupGrid');
+    if (groups.length === 0) return;
+    grid.innerHTML = groups.map(g => `
+      <div class="service-card">
+        <div class="top"><div class="name">🔐 ${g.name}</div></div>
+        <div class="meta" style="margin-top:8px;"><span>${Object.keys(g.vars || {}).length} variables</span></div>
+      </div>
+    `).join('');
+  }
+
+  function showNewEnvGroupModal() {
+    showModal(
+      '🔐 New Environment Group',
+      'Share environment variables across multiple services.',
+      `<div class="form-group">
+        <label>Group Name</label>
+        <input class="input" id="egName" placeholder="production-config">
+      </div>
+      <div class="form-group">
+        <label>Variables (one per line, KEY=VALUE)</label>
+        <textarea class="input" id="egVars" placeholder="DATABASE_URL=postgres://...&#10;API_KEY=sk-...&#10;NODE_ENV=production" rows="5"></textarea>
+      </div>`,
+      () => {
+        const name = document.getElementById('egName').value.trim();
+        if (!name) { showToast('Enter a group name', 'error'); return; }
+        const text = document.getElementById('egVars').value.trim();
+        const vars = {};
+        text.split('\n').forEach(line => {
+          const [k, ...v] = line.split('=');
+          if (k.trim()) vars[k.trim()] = v.join('=').trim();
+        });
+        const groups = DB.get('envgroups', []);
+        groups.push({ id: 'eg-' + Date.now().toString(36), name, vars, createdAt: new Date().toISOString() });
+        DB.set('envgroups', groups);
+        refreshEnvGroups();
+        closeModal();
+        showToast('✅ Environment group created!', 'success');
+      }
+    );
+  }
+
+  // ==================== BILLING ====================
+  function refreshBilling() {
+    const premium = DB.get('premium', { tier: 'free', code: null });
+    const planNames = { free: 'Hobby', premium: 'Pro', business: 'Business', elite: 'Zeus Elite' };
+    const planPrices = { free: '$0', premium: '$25', business: '$99', elite: '$149' };
+    const planDescs = {
+      free: 'Free forever · 1 web service, 1 static site, 1 cron job',
+      premium: 'Unlimited services, 2GB RAM instances, 15 custom domains, SOC 2 reports',
+      business: 'Everything in Pro + HIPAA, SSO, SCIM, RBAC, 50 custom domains',
+      elite: 'Everything in Business + GPU instances, unlimited everything, direct Zeus support'
+    };
+    const badges = { free: 'badge-free', premium: 'badge-pro', business: 'badge-business', elite: 'badge-elite' };
+
+    document.getElementById('billingPlanName').textContent = planNames[premium.tier] || 'Hobby';
+    document.getElementById('billingPlanPrice').innerHTML = planPrices[premium.tier] + ' <span>/ month</span>';
+    document.getElementById('billingPlanDesc').textContent = planDescs[premium.tier] || planDescs.free;
+    document.getElementById('billingTierBadge').textContent = (premium.tier || 'free').toUpperCase();
+    document.getElementById('billingTierBadge').className = 'badge ' + (badges[premium.tier] || 'badge-free');
+    document.getElementById('billingCodeDisplay').textContent = premium.code ? `Code: ${premium.code}` : '';
+  }
+
+  // ==================== PREMIUM CODES ====================
+  const PREMIUM_CODES = {};
+  // Generate ZEUS100 through ZEUS999
+  for (let i = 100; i <= 199; i++) PREMIUM_CODES['ZEUS' + i] = 'premium';
+  for (let i = 200; i <= 299; i++) PREMIUM_CODES['ZEUS' + i] = 'business';
+  for (let i = 300; i <= 999; i++) PREMIUM_CODES['ZEUS' + i] = 'elite';
+  // Special codes
+  ['ZEUS001','ZEUS002','ZEUS003','ZEUS004','ZEUS005','ZEUS010','ZEUS020','ZEUS050','ZEUS1000'].forEach(c => PREMIUM_CODES[c] = 'elite');
+  // Extended range ZEUS101-199 already covered; add ZEUS000 as owner master
+  PREMIUM_CODES['ZEUS000'] = 'elite';
+  // Allow ZEUS100-199, ZEUS200-299, ZEUS300-999
+  // ZEUS102-ZEUS199, ZEUS202-ZEUS299, ZEUS302-ZEUS999 all covered
+
+  function activateCode() {
+    const input = document.getElementById('landingPremiumCode') || document.getElementById('billingCode') || document.getElementById('premiumCode');
+    if (!input) { showToast('Enter your premium code', 'error'); return; }
+    const code = input.value.trim().toUpperCase();
+    if (!code) { showToast('Enter your premium code', 'error'); return; }
+
+    const tier = PREMIUM_CODES[code];
+    if (!tier) {
+      showToast('❌ Invalid code. Contact Zeus on WhatsApp +234 906 676 0078', 'error');
+      return;
     }
+
+    const used = DB.get('used_codes', []);
+    if (used.includes(code)) {
+      showToast('⚠️ This code has already been used', 'warning');
+      return;
+    }
+
+    used.push(code);
+    DB.set('used_codes', used);
+
+    const premium = { tier, code, activatedAt: new Date().toISOString() };
+    DB.set('premium', premium);
+
+    // Upgrade existing services
+    const ramMap = { premium: '2GB', business: '4GB', elite: '8GB' };
+    const services = getServices();
+    services.forEach(s => { s.ram = ramMap[tier] || s.ram; s.tier = tier; });
+    saveServices(services);
+
+    // If on landing page, redirect to dashboard
+    if (document.getElementById('view-landing').style.display !== 'none') {
+      showToast(`✅ ${tier.charAt(0).toUpperCase() + tier.slice(1)} activated with ${code}!`, 'success');
+      setTimeout(() => showDashboard(), 1000);
+    } else {
+      refreshBilling();
+      refreshServices();
+      showToast(`✅ ${tier.charAt(0).toUpperCase() + tier.slice(1)} activated with ${code}!`, 'success');
+    }
+
+    input.value = '';
   }
 
-  // ===================== PREMIUM CODES =====================
-  const VALID_CODES = {
-    'ZEUS100': 'premium', 'ZEUS101': 'premium', 'ZEUS102': 'premium',
-    'ZEUS103': 'premium', 'ZEUS104': 'premium', 'ZEUS105': 'premium',
-    'ZEUS106': 'premium', 'ZEUS107': 'premium', 'ZEUS108': 'premium',
-    'ZEUS109': 'premium', 'ZEUS110': 'premium', 'ZEUS111': 'premium',
-    'ZEUS112': 'premium', 'ZEUS113': 'premium', 'ZEUS114': 'premium',
-    'ZEUS115': 'premium', 'ZEUS116': 'premium', 'ZEUS117': 'premium',
-    'ZEUS118': 'premium', 'ZEUS119': 'premium', 'ZEUS120': 'premium',
-    'ZEUS121': 'premium', 'ZEUS122': 'premium', 'ZEUS123': 'premium',
-    'ZEUS124': 'premium', 'ZEUS125': 'premium', 'ZEUS126': 'premium',
-    'ZEUS127': 'premium', 'ZEUS128': 'premium', 'ZEUS129': 'premium',
-    'ZEUS130': 'premium', 'ZEUS131': 'premium', 'ZEUS132': 'premium',
-    'ZEUS133': 'premium', 'ZEUS134': 'premium', 'ZEUS135': 'premium',
-    'ZEUS136': 'premium', 'ZEUS137': 'premium', 'ZEUS138': 'premium',
-    'ZEUS139': 'premium', 'ZEUS140': 'premium', 'ZEUS141': 'premium',
-    'ZEUS142': 'premium', 'ZEUS143': 'premium', 'ZEUS144': 'premium',
-    'ZEUS145': 'premium', 'ZEUS146': 'premium', 'ZEUS147': 'premium',
-    'ZEUS148': 'premium', 'ZEUS149': 'premium', 'ZEUS150': 'premium',
-    'ZEUS151': 'premium', 'ZEUS152': 'premium', 'ZEUS153': 'premium',
-    'ZEUS154': 'premium', 'ZEUS155': 'premium', 'ZEUS156': 'premium',
-    'ZEUS157': 'premium', 'ZEUS158': 'premium', 'ZEUS159': 'premium',
-    'ZEUS160': 'premium', 'ZEUS161': 'premium', 'ZEUS162': 'premium',
-    'ZEUS163': 'premium', 'ZEUS164': 'premium', 'ZEUS165': 'premium',
-    'ZEUS166': 'premium', 'ZEUS167': 'premium', 'ZEUS168': 'premium',
-    'ZEUS169': 'premium', 'ZEUS170': 'premium', 'ZEUS171': 'premium',
-    'ZEUS172': 'premium', 'ZEUS173': 'premium', 'ZEUS174': 'premium',
-    'ZEUS175': 'premium', 'ZEUS176': 'premium', 'ZEUS177': 'premium',
-    'ZEUS178': 'premium', 'ZEUS179': 'premium', 'ZEUS180': 'premium',
-    'ZEUS181': 'premium', 'ZEUS182': 'premium', 'ZEUS183': 'premium',
-    'ZEUS184': 'premium', 'ZEUS185': 'premium', 'ZEUS186': 'premium',
-    'ZEUS187': 'premium', 'ZEUS188': 'premium', 'ZEUS189': 'premium',
-    'ZEUS190': 'premium', 'ZEUS191': 'premium', 'ZEUS192': 'premium',
-    'ZEUS193': 'premium', 'ZEUS194': 'premium', 'ZEUS195': 'premium',
-    'ZEUS196': 'premium', 'ZEUS197': 'premium', 'ZEUS198': 'premium',
-    'ZEUS199': 'premium',
-    'ZEUS200': 'business', 'ZEUS201': 'business', 'ZEUS202': 'business',
-    'ZEUS210': 'business', 'ZEUS220': 'business', 'ZEUS230': 'business',
-    'ZEUS240': 'business', 'ZEUS250': 'business', 'ZEUS260': 'business',
-    'ZEUS270': 'business', 'ZEUS280': 'business', 'ZEUS290': 'business',
-    'ZEUS299': 'business',
-    'ZEUS300': 'elite', 'ZEUS301': 'elite', 'ZEUS302': 'elite',
-    'ZEUS310': 'elite', 'ZEUS320': 'elite', 'ZEUS330': 'elite',
-    'ZEUS340': 'elite', 'ZEUS350': 'elite', 'ZEUS400': 'elite',
-    'ZEUS500': 'elite', 'ZEUS600': 'elite', 'ZEUS700': 'elite',
-    'ZEUS800': 'elite', 'ZEUS900': 'elite', 'ZEUS999': 'elite',
-    'ZEUS001': 'elite', 'ZEUS002': 'elite', 'ZEUS003': 'elite',
-    'ZEUS004': 'elite', 'ZEUS005': 'elite', 'ZEUS010': 'elite',
-    'ZEUS020': 'elite', 'ZEUS050': 'elite', 'ZEUS1000': 'elite'
-  };
+  // ==================== AUDIT LOGS ====================
+  function addAuditLog(msg) {
+    const viewer = document.getElementById('auditLogViewer');
+    if (!viewer) return;
+    const ts = new Date().toISOString();
+    const line = document.createElement('div');
+    line.className = 'line dim';
+    line.innerHTML = `<span class="ts">[${ts}]</span> ${msg}`;
+    viewer.appendChild(line);
+    viewer.scrollTop = viewer.scrollHeight;
+  }
 
-  let pendingModalTier = 'premium';
+  // ==================== TOAST ====================
+  function showToast(msg, type) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + (type || 'info');
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'slideOut 0.3s ease forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
 
-  function showCodeModal(tier) {
-    pendingModalTier = tier;
-    document.getElementById('modalCode').value = '';
-    document.getElementById('premiumModal').classList.add('active');
+  // ==================== MODAL ====================
+  function showModal(title, desc, body, onConfirm) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('modalBody').innerHTML = body;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modalConfirm').onclick = onConfirm;
   }
 
   function closeModal() {
-    document.getElementById('premiumModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
   }
 
-  function activateCodeFromModal() {
-    const code = document.getElementById('modalCode').value.trim().toUpperCase();
-    if (!code) { showToast('Please enter a premium code', 'error'); return; }
-    activateCode(code, pendingModalTier);
-    closeModal();
+  // ==================== MISC ====================
+  function scrollToSection(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function activatePremium() {
-    const code = document.getElementById('premiumCode').value.trim().toUpperCase();
-    if (!code) { showToast('Please enter a premium code', 'error'); return; }
-    activateCode(code, 'auto');
+  function updateAllBadges() {
+    const count = getServices().length;
+    document.getElementById('sidebarServiceCount').textContent = count;
   }
 
-  function activateCode(code, expectedTier) {
-    // Check if code exists
-    const tier = VALID_CODES[code];
-    if (!tier) {
-      showToast('❌ Invalid premium code. Contact Zeus on WhatsApp.', 'error');
-      return;
-    }
-
-    // Check if already used
-    const usedCodes = JSON.parse(localStorage.getItem('zurl_used_codes') || '[]');
-    if (usedCodes.includes(code)) {
-      showToast('⚠️ This code has already been used.', 'warning');
-      return;
-    }
-
-    // Activate
-    usedCodes.push(code);
-    localStorage.setItem('zurl_used_codes', JSON.stringify(usedCodes));
-
-    const tierNames = { premium: 'Premium ZEUS 🔷', business: 'Business ZEUS 💼', elite: 'Zeus Elite 🦅' };
-
-    db.premium = {
-      tier: tier,
-      code: code,
-      activatedAt: new Date().toISOString()
-    };
-
-    // Upgrade all existing services
-    const ramMap = { premium: '2 GB', business: '4 GB', elite: '8 GB' };
-    db.services.forEach(s => {
-      s.ram = ramMap[tier] || '512 MB';
-      s.tier = tier;
-    });
-
-    saveDB();
-    refreshDashboard();
-    updatePricingDisplay();
-    showToast(`✅ ${tierNames[tier] || 'Premium'} activated with code ${code}!`, 'success');
-    document.getElementById('premiumCode').value = '';
-  }
-
-  function updatePricingDisplay() {
-    const tier = db.premium.tier || 'free';
-    const code = db.premium.code || '—';
-    const cards = document.querySelectorAll('.pricing-card');
-    cards.forEach((card, i) => {
-      const btn = card.querySelector('button');
-      if (btn) {
-        if (tier === 'premium' && i === 1) btn.textContent = '✅ Active';
-        else if (tier === 'business' && i === 2) btn.textContent = '✅ Active';
-        else if (tier === 'elite' && i === 3) btn.textContent = '✅ Active';
-      }
-    });
-  }
-
-  // ===================== TOAST =====================
-  function showToast(msg, type) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.className = 'toast ' + (type || '');
-    toast.classList.add('show');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
-  }
-
-  // ===================== MISC =====================
-  // Click outside modal to close
+  // Close modal on overlay click
   document.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal-overlay')) closeModal();
   });
 
-  // ===================== INIT =====================
-  document.addEventListener('DOMContentLoaded', function() {
-    // Show features tab by default
-    showTab('features');
-    loadExistingRepos();
-    updatePricingDisplay();
-
-    // If there are services already, show count
-    refreshDashboard();
-
-    // Default env var row
-    if (document.querySelectorAll('.env-row').length === 0) {
-      addEnvVar('', '');
+  // Keyboard shortcut
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      showToast('🔍 Search: Type to find services...', 'info');
     }
+    if (e.key === 'Escape') closeModal();
   });
-</script>
 
+  // ==================== INIT ====================
+  document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
