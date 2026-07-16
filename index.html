@@ -1,1642 +1,1120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZEUS LINKS · URL Shortener + Analytics</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a12; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #f7c948, #d4941a); border-radius: 10px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z-URL · Deploy & Host from GitHub</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⚡</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #12121a; }
+    ::-webkit-scrollbar-thumb { background: #3a3a5c; border-radius: 4px; }
+    a { color: #7c7cff; text-decoration: none; }
+    a:hover { color: #a0a0ff; }
 
-        body {
-            font-family: 'Exo 2', sans-serif;
-            background: #0a0a12;
-            color: #fff;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    /* Navigation */
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 32px; background: #0e0e18; border-bottom: 1px solid #1e1e30;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .navbar .logo {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 24px; font-weight: 800; color: #fff;
+    }
+    .navbar .logo span { color: #7c7cff; }
+    .navbar .logo small { font-size: 12px; font-weight: 400; color: #888; margin-left: 4px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: #aaa; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-links .btn { padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .btn-primary { background: #7c7cff; color: #fff !important; border: none; }
+    .btn-primary:hover { background: #6a6aff; }
+    .btn-outline { background: transparent; border: 1.5px solid #3a3a5c; color: #ccc !important; }
+    .btn-outline:hover { border-color: #7c7cff; color: #fff !important; }
+    .btn-success { background: #22c55e; color: #fff !important; border: none; }
+    .btn-success:hover { background: #16a34a; }
+    .btn-danger { background: #ef4444; color: #fff !important; border: none; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-warning { background: #f59e0b; color: #000 !important; border: none; }
+    .btn-warning:hover { background: #d97706; }
+    .btn-sm { padding: 6px 14px; font-size: 13px; }
 
-        /* ===== PARTICLES ===== */
-        #particles-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
+    /* Hero */
+    .hero {
+      text-align: center; padding: 80px 20px 60px;
+      background: linear-gradient(180deg, #0e0e18 0%, #0a0a0f 100%);
+    }
+    .hero h1 { font-size: 52px; font-weight: 900; margin-bottom: 16px; background: linear-gradient(135deg, #7c7cff, #22c55e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 20px; color: #888; max-width: 640px; margin: 0 auto 32px; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero-buttons .btn { padding: 14px 32px; font-size: 16px; border-radius: 10px; }
 
-        /* ===== AMBIENT GLOW ===== */
-        .ambient-glow {
-            position: fixed;
-            width: 500px; height: 500px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.1;
-            z-index: 0;
-            pointer-events: none;
-            animation: ambientPulse 6s ease-in-out infinite alternate;
-        }
-        .ambient-glow.g1 { background: #f7c948; top: -8%; left: -4%; }
-        .ambient-glow.g2 { background: #06b6d4; bottom: -8%; right: -4%; animation-delay: 3s; }
-        .ambient-glow.g3 { background: #7b2ff7; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 5s; width: 700px; height: 700px; }
+    /* Container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        @keyframes ambientPulse {
-            0% { opacity: 0.06; transform: scale(1); }
-            100% { opacity: 0.15; transform: scale(1.2); }
-        }
+    /* Sections */
+    .section { padding: 60px 0; }
+    .section-title { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 40px; }
+    .section-subtitle { text-align: center; color: #888; margin-bottom: 48px; font-size: 16px; }
 
-        /* ===== PRELOADER ===== */
-        #preloader {
-            position: fixed;
-            inset: 0;
-            background: #0a0a12;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s, visibility 0.8s;
-        }
-        #preloader.hidden { opacity: 0; visibility: hidden; }
-        .loader-zeus {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #f7c948, #fff7d6, #d4941a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(247,201,72,0.2);
-            animation: loaderPulse 1.5s ease-in-out infinite;
-            letter-spacing: 8px;
-        }
-        .loader-sub {
-            font-family: 'Rajdhani', sans-serif;
-            color: #666;
-            margin-top: 16px;
-            letter-spacing: 6px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-        .loader-bar {
-            margin-top: 28px;
-            width: 200px;
-            height: 3px;
-            background: #1a1a2e;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .loader-bar-fill {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, #f7c948, #d4941a);
-            border-radius: 10px;
-            animation: loaderFill 2s ease-in-out forwards;
-        }
-        @keyframes loaderPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-        }
-        @keyframes loaderFill { 0% { width: 0%; } 100% { width: 100%; } }
+    /* Cards */
+    .card {
+      background: #12121a; border: 1px solid #1e1e30; border-radius: 16px;
+      padding: 32px; transition: all 0.3s;
+    }
+    .card:hover { border-color: #3a3a5c; box-shadow: 0 4px 24px rgba(124, 124, 255, 0.08); }
+    .card h3 { font-size: 20px; margin-bottom: 12px; color: #fff; }
+    .card p { color: #888; font-size: 14px; }
 
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 16px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(10,10,18,0.7);
-            backdrop-filter: blur(24px);
-            border-bottom: 1px solid rgba(247,201,72,0.06);
-            transition: all 0.4s;
-        }
-        .navbar.scrolled {
-            background: rgba(10,10,18,0.92);
-            border-bottom-color: rgba(247,201,72,0.12);
-        }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-        .nav-logo-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, #f7c948, #d4941a);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 1rem;
-            color: #0a0a12;
-            box-shadow: 0 0 20px rgba(247,201,72,0.2);
-        }
-        .nav-logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.3rem;
-            background: linear-gradient(135deg, #f7c948, #fff7d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-logo-text span { font-weight: 400; -webkit-text-fill-color: #777; font-size: 0.8rem; }
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            list-style: none;
-        }
-        .nav-links a {
-            color: #999;
-            text-decoration: none;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: color 0.3s;
-            position: relative;
-            padding: 4px 0;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #f7c948;
-            transition: width 0.3s;
-        }
-        .nav-links a:hover { color: #f7c948; }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-links a.active { color: #f7c948; }
-        .nav-links a.active::after { width: 100%; }
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
 
-        .nav-premium-btn {
-            padding: 8px 20px;
-            background: linear-gradient(135deg, #f7c948, #d4941a);
-            border: none;
-            border-radius: 50px;
-            color: #0a0a12;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .nav-premium-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(247,201,72,0.3); }
+    /* Features */
+    .feature-card { text-align: center; }
+    .feature-card .icon { font-size: 36px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 18px; }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-        }
-        .hamburger span { width: 26px; height: 2px; background: #f7c948; border-radius: 10px; transition: all 0.3s; }
+    /* Steps */
+    .step-card { display: flex; gap: 20px; align-items: flex-start; counter-increment: step; }
+    .step-card .num {
+      font-size: 28px; font-weight: 900; color: #7c7cff; min-width: 48px;
+      background: rgba(124, 124, 255, 0.1); height: 48px; display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+    }
 
-        /* ===== HERO ===== */
-        .hero {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 120px 20px 60px;
-        }
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 22px;
-            background: rgba(247,201,72,0.06);
-            border: 1px solid rgba(247,201,72,0.12);
-            border-radius: 50px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #f7c948;
-            margin-bottom: 28px;
-            animation: fadeInUp 0.8s ease-out;
-        }
-        .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5rem, 7vw, 5.5rem);
-            font-weight: 900;
-            line-height: 1.05;
-            margin-bottom: 18px;
-            animation: fadeInUp 0.8s ease-out 0.15s both;
-        }
-        .hero h1 .gold {
-            background: linear-gradient(135deg, #f7c948, #ffd700, #f7c948);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3.5s ease-in-out infinite;
-        }
-        .hero h1 .white { color: #fff; -webkit-text-fill-color: #fff; }
-        @keyframes shimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        .hero p {
-            font-size: 1.1rem;
-            color: #999;
-            max-width: 600px;
-            line-height: 1.7;
-            margin-bottom: 10px;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-            font-weight: 300;
-        }
+    /* Pricing */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 40px; }
+    .pricing-card {
+      background: #12121a; border: 1px solid #1e1e30; border-radius: 16px;
+      padding: 32px; text-align: center; position: relative; transition: all 0.3s;
+    }
+    .pricing-card.featured { border-color: #7c7cff; box-shadow: 0 0 32px rgba(124, 124, 255, 0.15); }
+    .pricing-card .badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: #7c7cff; color: #fff; padding: 4px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+    }
+    .pricing-card .price { font-size: 42px; font-weight: 900; color: #fff; margin: 16px 0 8px; }
+    .pricing-card .price span { font-size: 16px; color: #888; font-weight: 400; }
+    .pricing-card .subtitle { color: #888; font-size: 14px; margin-bottom: 24px; }
+    .pricing-card ul { list-style: none; text-align: left; margin: 24px 0; }
+    .pricing-card ul li { padding: 8px 0; font-size: 14px; color: #bbb; display: flex; align-items: center; gap: 10px; }
+    .pricing-card ul li::before { content: "✓"; color: #22c55e; font-weight: 700; }
 
-        /* ===== SHORTENER CARD ===== */
-        .shortener-card {
-            max-width: 700px;
-            margin: 28px auto;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(247,201,72,0.08);
-            border-radius: 20px;
-            padding: 36px;
-            animation: fadeInUp 0.8s ease-out 0.45s both;
-            backdrop-filter: blur(10px);
-        }
-        .shortener-card .sc-label {
-            font-family: 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.7rem;
-            color: #f7c948;
-            margin-bottom: 16px;
-        }
-        .shortener-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-        .shortener-input-group input {
-            flex: 1;
-            padding: 16px 20px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 12px;
-            color: #fff;
-            font-family: 'Exo 2', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .shortener-input-group input:focus { border-color: #f7c948; }
-        .shortener-input-group input::placeholder { color: #555; }
-        .shortener-input-group button {
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #f7c948, #d4941a);
-            border: none;
-            border-radius: 12px;
-            color: #0a0a12;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-        .shortener-input-group button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(247,201,72,0.2); }
-        .shortener-input-group button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    /* Deploy Form */
+    .deploy-section {
+      background: linear-gradient(135deg, #0e0e18 0%, #14142a 100%);
+      border-radius: 20px; padding: 48px; margin: 40px 0; border: 1px solid #1e1e30;
+    }
+    .deploy-section h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .deploy-section .desc { color: #888; margin-bottom: 32px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; color: #bbb; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 16px; background: #0a0a0f; border: 1px solid #2a2a40;
+      border-radius: 10px; color: #fff; font-size: 14px; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: #7c7cff; box-shadow: 0 0 0 3px rgba(124, 124, 255, 0.15);
+    }
+    .form-group select { cursor: pointer; }
+    .form-group .hint { font-size: 12px; color: #666; margin-top: 4px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
-        .shortener-options {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
-        .shortener-options .opt-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.85rem;
-            color: #888;
-        }
-        .shortener-options .opt-group input {
-            padding: 8px 12px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 8px;
-            color: #fff;
-            font-family: 'Exo 2', sans-serif;
-            font-size: 0.85rem;
-            outline: none;
-            max-width: 150px;
-            transition: border-color 0.3s;
-        }
-        .shortener-options .opt-group input:focus { border-color: #f7c948; }
-        .shortener-options .opt-group label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .shortener-options .opt-group input[type="checkbox"] { accent-color: #f7c948; }
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 32px; background: #0a0a0f; border-radius: 12px; padding: 4px; max-width: fit-content; }
+    .tab { padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; color: #888; cursor: pointer; transition: all 0.2s; border: none; background: none; }
+    .tab.active { background: #1e1e30; color: #fff; }
 
-        .result-box {
-            display: none;
-            margin-top: 16px;
-            padding: 16px 20px;
-            background: rgba(247,201,72,0.04);
-            border: 1px solid rgba(247,201,72,0.12);
-            border-radius: 12px;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            animation: fadeInUp 0.3s ease-out;
-        }
-        .result-box.show { display: flex; }
-        .result-box .rb-link {
-            color: #f7c948;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            word-break: break-all;
-            flex: 1;
-        }
-        .result-box .rb-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .result-box .rb-actions button {
-            padding: 8px 16px;
-            border: 1px solid rgba(247,201,72,0.2);
-            border-radius: 8px;
-            background: transparent;
-            color: #f7c948;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .result-box .rb-actions button:hover { background: rgba(247,201,72,0.08); }
+    /* Dashboard */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: #12121a; border: 1px solid #1e1e30; border-radius: 12px; padding: 20px; }
+    .stat-card .stat-value { font-size: 28px; font-weight: 800; color: #fff; }
+    .stat-card .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+    .stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
 
-        .hero-stats {
-            display: flex;
-            gap: 50px;
-            margin-top: 30px;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
-        }
-        .hero-stat { text-align: center; }
-        .hero-stat .num {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f7c948, #fff7d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-stat .label {
-            font-family: 'Rajdhani', sans-serif;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.75rem;
-            margin-top: 4px;
-        }
+    /* Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 12px 16px; font-size: 12px; text-transform: uppercase; color: #666; border-bottom: 1px solid #1e1e30; }
+    tbody td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #151520; }
+    tbody tr:hover { background: rgba(124, 124, 255, 0.03); }
+    .status-running { color: #22c55e; display: flex; align-items: center; gap: 6px; }
+    .status-running::before { content: ""; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
+    .status-building { color: #f59e0b; display: flex; align-items: center; gap: 6px; }
+    .status-building::before { content: ""; width: 8px; height: 8px; background: #f59e0b; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+    .status-failed { color: #ef4444; display: flex; align-items: gap: 6px; }
+    .status-failed::before { content: ""; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    /* Logs */
+    .log-viewer {
+      background: #050508; border: 1px solid #1e1e30; border-radius: 12px;
+      padding: 20px; font-family: 'Courier New', monospace; font-size: 13px;
+      max-height: 400px; overflow-y: auto; color: #22c55e; line-height: 1.5;
+    }
+    .log-viewer .log-line { margin: 2px 0; }
+    .log-viewer .log-line.error { color: #ef4444; }
+    .log-viewer .log-line.warn { color: #f59e0b; }
+    .log-viewer .log-line.info { color: #7c7cff; }
+    .log-viewer .log-line.dim { color: #555; }
 
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: #444;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.65rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            animation: bounceDown 2s ease-in-out infinite;
-        }
-        .scroll-indicator .mouse {
-            width: 22px; height: 36px;
-            border: 2px solid rgba(247,201,72,0.12);
-            border-radius: 12px;
-            position: relative;
-        }
-        .scroll-indicator .mouse::after {
-            content: '';
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px; height: 8px;
-            background: #f7c948;
-            border-radius: 10px;
-            animation: scrollDot 2s ease-in-out infinite;
-        }
-        @keyframes bounceDown {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(8px); }
-        }
-        @keyframes scrollDot {
-            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
-            100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
-        }
+    /* Premium Code Input */
+    .code-input-wrap { display: flex; gap: 12px; max-width: 500px; margin: 24px auto; }
+    .code-input-wrap input { flex: 1; padding: 14px 20px; background: #0a0a0f; border: 1px solid #2a2a40; border-radius: 10px; color: #fff; font-size: 16px; text-align: center; letter-spacing: 2px; font-weight: 600; }
+    .code-input-wrap input:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
 
-        /* ===== SECTION COMMON ===== */
-        section {
-            position: relative;
-            z-index: 1;
-            padding: 100px 20px;
-        }
-        .section-label {
-            font-family: 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            font-size: 0.75rem;
-            color: #f7c948;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.8rem, 4vw, 3rem);
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 14px;
-        }
-        .section-sub {
-            text-align: center;
-            color: #777;
-            max-width: 500px;
-            margin: 0 auto 50px;
-            font-weight: 300;
-            line-height: 1.7;
-        }
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #14141f; border: 1px solid #2a2a40; border-radius: 20px;
+      padding: 40px; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto;
+    }
+    .modal h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .modal p { color: #888; margin-bottom: 24px; }
 
-        /* ===== DASHBOARD ===== */
-        .dashboard-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 36px;
-        }
-        .dash-tab {
-            padding: 10px 22px;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 10px;
-            color: #666;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .dash-tab:hover { color: #f7c948; border-color: rgba(247,201,72,0.1); }
-        .dash-tab.active {
-            background: linear-gradient(135deg, rgba(247,201,72,0.1), rgba(212,148,26,0.06));
-            color: #f7c948;
-            border-color: rgba(247,201,72,0.15);
-        }
+    /* Environment */
+    .env-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .env-row input { flex: 1; padding: 8px 12px; background: #0a0a0f; border: 1px solid #2a2a40; border-radius: 6px; color: #fff; font-size: 13px; }
+    .env-row .btn { padding: 6px 12px; font-size: 12px; }
 
-        .dash-panel { display: none; }
-        .dash-panel.active { display: block; animation: tabFade 0.4s ease-out; }
-        @keyframes tabFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    /* Footer */
+    footer {
+      text-align: center; padding: 40px 20px; border-top: 1px solid #1e1e30;
+      color: #555; font-size: 13px; margin-top: 60px;
+    }
+    footer a { color: #888; }
 
-        /* ===== ANALYTICS CARDS ===== */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            max-width: 1100px;
-            margin: 0 auto 30px;
-        }
-        .analytics-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 14px;
-            padding: 24px 20px;
-            text-align: center;
-            transition: all 0.4s;
-        }
-        .analytics-card:hover { border-color: rgba(247,201,72,0.08); transform: translateY(-3px); }
-        .analytics-card .ac-icon { font-size: 1.6rem; color: #f7c948; margin-bottom: 8px; }
-        .analytics-card .ac-num {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #f7c948, #fff7d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .analytics-card .ac-label {
-            font-family: 'Rajdhani', sans-serif;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.7rem;
-            margin-top: 4px;
-        }
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1e1e30;
+      border: 1px solid #3a3a5c; border-radius: 12px; padding: 16px 24px;
+      color: #fff; font-size: 14px; z-index: 1000;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: #22c55e; }
+    .toast.error { border-color: #ef4444; }
+    .toast.warning { border-color: #f59e0b; }
 
-        /* ===== CHART AREA ===== */
-        .chart-container {
-            max-width: 800px;
-            margin: 24px auto;
-            background: rgba(255,255,255,0.01);
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 16px;
-            padding: 28px;
-        }
-        .chart-container h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            color: #f7c948;
-            margin-bottom: 20px;
-        }
-        .bar-chart {
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            height: 160px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .bar-chart .bar-wrap {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-            justify-content: flex-end;
-        }
-        .bar-chart .bar {
-            width: 100%;
-            max-width: 40px;
-            background: linear-gradient(180deg, #f7c948, rgba(247,201,72,0.3));
-            border-radius: 6px 6px 0 0;
-            transition: height 0.8s ease-out;
-            min-height: 4px;
-            cursor: pointer;
-        }
-        .bar-chart .bar:hover { opacity: 0.8; }
-        .bar-chart .bar-label {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.65rem;
-            color: #555;
-            margin-top: 6px;
-            text-transform: uppercase;
-        }
-        .bar-chart .bar-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.65rem;
-            color: #f7c948;
-            margin-bottom: 4px;
-        }
-
-        /* ===== LINKS TABLE ===== */
-        .links-table-wrap {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: rgba(255,255,255,0.01);
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .links-table-wrap h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            color: #f7c948;
-            padding: 20px 24px 0;
-        }
-        .table-header {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
-            padding: 14px 24px;
-            background: rgba(247,201,72,0.03);
-            border-bottom: 1px solid rgba(247,201,72,0.05);
-            font-family: 'Rajdhani', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-size: 0.7rem;
-            color: #888;
-        }
-        .table-row {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
-            padding: 14px 24px;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            transition: background 0.3s;
-            font-size: 0.85rem;
-        }
-        .table-row:hover { background: rgba(247,201,72,0.02); }
-        .table-row:last-child { border-bottom: none; }
-        .table-row .tr-link { color: #f7c948; font-weight: 600; word-break: break-all; }
-        .table-row .tr-original { color: #777; font-size: 0.75rem; word-break: break-all; }
-        .table-row .tr-clicks { font-family: 'Orbitron', sans-serif; color: #fff; }
-        .table-row .tr-unique { color: #22c55e; font-family: 'Rajdhani', sans-serif; }
-        .table-row .tr-country { color: #aaa; font-family: 'Rajdhani', sans-serif; }
-        .table-row .tr-delete button {
-            background: none;
-            border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 6px;
-            color: #ef4444;
-            padding: 4px 10px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .table-row .tr-delete button:hover { background: rgba(239,68,68,0.1); }
-
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #555;
-        }
-        .empty-state i { font-size: 2.5rem; margin-bottom: 12px; color: #333; }
-        .empty-state p { font-size: 0.9rem; }
-
-        /* ===== QR CODE ===== */
-        .qr-container {
-            text-align: center;
-            padding: 20px;
-        }
-        .qr-container #qrCanvas {
-            background: #fff;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            max-width: 200px;
-            display: inline-block;
-        }
-        .qr-container .qr-link {
-            color: #f7c948;
-            font-size: 0.9rem;
-            word-break: break-all;
-        }
-
-        /* ===== PREMIUM ===== */
-        .premium-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .premium-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 20px;
-            padding: 36px 28px;
-            text-align: center;
-            transition: all 0.4s;
-        }
-        .premium-card.featured {
-            border-color: rgba(247,201,72,0.18);
-            background: rgba(247,201,72,0.02);
-            transform: scale(1.02);
-        }
-        .premium-card.featured .prem-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            background: linear-gradient(135deg, #f7c948, #d4941a);
-            border-radius: 50px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #0a0a12;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 14px;
-        }
-        .premium-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; margin-bottom: 10px; }
-        .premium-card .price {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #f7c948, #fff7d6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 14px 0;
-        }
-        .premium-card .price span { font-size: 0.9rem; -webkit-text-fill-color: #666; }
-        .premium-card ul { list-style: none; text-align: left; margin: 18px 0; }
-        .premium-card ul li {
-            padding: 9px 0;
-            color: #aaa;
-            font-size: 0.85rem;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .premium-card ul li i { color: #f7c948; width: 18px; }
-
-        .premium-code-section {
-            max-width: 460px;
-            margin: 50px auto 0;
-            text-align: center;
-        }
-        .premium-code-section h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; margin-bottom: 6px; }
-        .premium-code-section p { color: #777; font-size: 0.85rem; margin-bottom: 18px; }
-        .premium-input-group {
-            display: flex;
-            gap: 10px;
-            max-width: 380px;
-            margin: 0 auto;
-        }
-        .premium-input-group input {
-            flex: 1;
-            padding: 12px 18px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            color: #fff;
-            font-family: 'Exo 2', sans-serif;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
-            text-align: center;
-            letter-spacing: 4px;
-            font-weight: 700;
-        }
-        .premium-input-group input:focus { border-color: #f7c948; }
-        .premium-input-group input::placeholder { letter-spacing: 1px; font-weight: 400; color: #444; }
-        .premium-input-group button {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #f7c948, #d4941a);
-            border: none;
-            border-radius: 12px;
-            color: #0a0a12;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .premium-input-group button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(247,201,72,0.15); }
-        .premium-code-msg { margin-top: 10px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; min-height: 22px; }
-        .premium-code-msg.success { color: #22c55e; }
-        .premium-code-msg.error { color: #ef4444; }
-
-        /* ===== CONTACT ===== */
-        .wa-banner {
-            max-width: 650px;
-            margin: 0 auto;
-            background: rgba(37,211,102,0.03);
-            border: 1px solid rgba(37,211,102,0.08);
-            border-radius: 20px;
-            padding: 36px;
-            text-align: center;
-        }
-        .wa-banner i.fa-whatsapp { font-size: 2.8rem; color: #25d366; margin-bottom: 14px; }
-        .wa-banner h3 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; margin-bottom: 6px; }
-        .wa-banner p { color: #888; margin-bottom: 20px; font-size: 0.9rem; }
-        .wa-banner .wa-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
-            background: #25d366;
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-family: 'Exo 2', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .wa-banner .wa-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(37,211,102,0.25); }
-
-        /* ===== FOOTER ===== */
-        footer {
-            position: relative;
-            z-index: 1;
-            padding: 36px 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.02);
-        }
-        footer p { color: #333; font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 2px; }
-        footer p a { color: #f7c948; text-decoration: none; }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 99999;
-            padding: 14px 22px;
-            background: #12121e;
-            border: 1px solid rgba(247,201,72,0.12);
-            border-radius: 14px;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 0.85rem;
-            transform: translateY(80px);
-            opacity: 0;
-            transition: all 0.4s;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 360px;
-        }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast i { font-size: 1.1rem; }
-        .toast.success i { color: #22c55e; }
-        .toast.error i { color: #ef4444; }
-        .toast.info i { color: #f7c948; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .navbar { padding: 12px 16px; }
-            .nav-links { display: none; }
-            .hamburger { display: flex; }
-            .nav-links.open {
-                display: flex;
-                position: absolute;
-                top: 100%; left: 0; width: 100%;
-                flex-direction: column;
-                background: rgba(10,10,18,0.98);
-                padding: 20px;
-                border-bottom: 1px solid rgba(247,201,72,0.08);
-                gap: 14px;
-            }
-            .hero h1 { font-size: clamp(1.8rem, 10vw, 3rem); }
-            .hero-stats { flex-wrap: wrap; gap: 20px; }
-            section { padding: 60px 14px; }
-            .shortener-card { padding: 24px; }
-            .shortener-input-group { flex-direction: column; }
-            .shortener-options { flex-direction: column; }
-            .table-header, .table-row { grid-template-columns: 1.2fr 0.8fr 0.6fr 0.6fr 0.6fr 0.5fr; font-size: 0.7rem; padding: 10px 14px; }
-            .premium-card.featured { transform: scale(1); }
-        }
-    </style>
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 16px; }
+      .navbar { padding: 12px 16px; }
+      .nav-links { gap: 12px; }
+      .nav-links a { font-size: 12px; }
+      .deploy-section { padding: 24px; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- PRELOADER -->
-<div id="preloader">
-    <div class="loader-zeus">ZEUS</div>
-    <div class="loader-sub">Link Shortener</div>
-    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
-</div>
-
-<!-- PARTICLES -->
-<canvas id="particles-canvas"></canvas>
-
-<!-- AMBIENT GLOWS -->
-<div class="ambient-glow g1"></div>
-<div class="ambient-glow g2"></div>
-<div class="ambient-glow g3"></div>
-
 <!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-    <a href="#" class="nav-logo">
-        <div class="nav-logo-icon">Z</div>
-        <div class="nav-logo-text">ZEUS <span>LINKS</span></div>
-    </a>
-    <ul class="nav-links" id="navLinks">
-        <li><a href="#" class="active" onclick="switchDash('overview',this);closeNav();return false;"><i class="fas fa-chart-pie"></i> Overview</a></li>
-        <li><a href="#" onclick="switchDash('links',this);closeNav();return false;"><i class="fas fa-link"></i> My Links</a></li>
-        <li><a href="#" onclick="switchDash('qr',this);closeNav();return false;"><i class="fas fa-qrcode"></i> QR Codes</a></li>
-        <li><a href="#" onclick="switchDash('premium',this);closeNav();return false;"><i class="fas fa-crown"></i> Premium</a></li>
-        <li><a href="#" onclick="switchDash('contact',this);closeNav();return false;"><i class="fas fa-envelope"></i> Contact</a></li>
-    </ul>
-    <button class="nav-premium-btn" onclick="switchDash('premium');closeNav();"><i class="fas fa-crown"></i> Upgrade</button>
-    <div class="hamburger" id="hamburger" onclick="toggleNav()">
-        <span></span><span></span><span></span>
-    </div>
+<nav class="navbar">
+  <div class="logo">
+    ⚡ Z-URL <small>· Hosting Platform</small>
+  </div>
+  <div class="nav-links">
+    <a href="#" onclick="showTab('features')">Features</a>
+    <a href="#" onclick="showTab('pricing')">Pricing</a>
+    <a href="#" onclick="showTab('dashboard')">Dashboard</a>
+    <a href="#" onclick="showTab('deploy')" class="btn btn-primary">Deploy</a>
+  </div>
 </nav>
 
-<!-- HERO + SHORTENER -->
-<section class="hero" id="hero">
-    <div class="hero-badge"><i class="fas fa-bolt"></i> Premium URL Shortener + Real-Time Analytics</div>
-    <h1 class="glow-text">
-        <span class="gold">SHORTEN.</span><br>
-        <span class="white">TRACK. <span class="gold">DOMINATE.</span></span>
-    </h1>
-    <p>Shorten your links, track every click in real-time, generate QR codes, and get deep analytics — all in one place.</p>
+<!-- HERO -->
+<div class="hero">
+  <h1>Deploy from GitHub. Scale Instantly.</h1>
+  <p>Connect your GitHub repository and Z-URL builds, deploys, and hosts your web apps — just like Render. Static sites, Node.js APIs, Python backends, and more.</p>
+  <div class="hero-buttons">
+    <a href="#" onclick="showTab('deploy')" class="btn btn-primary">⚡ Deploy from GitHub</a>
+    <a href="#" onclick="showTab('dashboard')" class="btn btn-outline">📊 My Dashboard</a>
+    <a href="https://wa.me/2349066760078?text=Hello%20Zeus!%20I%20want%20Premium%20Hosting%20for%20my%20repos" target="_blank" class="btn btn-outline">💬 Contact Zeus</a>
+  </div>
+</div>
 
-    <!-- SHORTENER CARD -->
-    <div class="shortener-card">
-        <div class="sc-label"><i class="fas fa-bolt"></i> Shorten a link</div>
-        <div class="shortener-input-group">
-            <input type="url" id="urlInput" placeholder="Paste your long URL here..." autocomplete="off">
-            <button id="shortenBtn" onclick="shortenLink()"><i class="fas fa-scissors"></i> Shorten</button>
-        </div>
-        <div class="shortener-options">
-            <div class="opt-group">
-                <label><input type="checkbox" id="customSlugCheck" onchange="toggleCustomSlug()"> Custom alias</label>
-                <input type="text" id="customSlugInput" placeholder="my-custom-link" disabled style="display:none;">
-            </div>
-            <div class="opt-group">
-                <label><input type="checkbox" id="generateQr" checked> Generate QR Code</label>
-            </div>
-        </div>
-        <div class="result-box" id="resultBox">
-            <span class="rb-link" id="resultLink">zeus.link/abc123</span>
-            <div class="rb-actions">
-                <button onclick="copyResult()"><i class="fas fa-copy"></i> Copy</button>
-                <button onclick="openResult()"><i class="fas fa-external-link-alt"></i> Open</button>
-            </div>
-        </div>
+<div class="container">
+
+  <!-- FEATURES TAB -->
+  <div id="tab-features" class="section">
+    <h2 class="section-title">Everything Render Has — Plus More</h2>
+    <p class="section-subtitle">Z-URL is a complete deployment platform. Connect your GitHub repo, pick your runtime, and we handle the rest.</p>
+
+    <div class="grid-3">
+      <div class="card feature-card"><div class="icon">🔗</div><h3>GitHub Integration</h3><p>Connect any public or private repo. Auto-deploy on every push to your branch.</p></div>
+      <div class="card feature-card"><div class="icon">🐳</div><h3>Containerized Builds</h3><p>Each deployment runs in an isolated Docker container with full build logs.</p></div>
+      <div class="card feature-card"><div class="icon">🌐</div><h3>Custom Domains</h3><p>Bring your own domain with automatic SSL/HTTPS via Let's Encrypt.</p></div>
+      <div class="card feature-card"><div class="icon">⚡</div><h3>Auto-scaling</h3><p>Apps scale from 0 to thousands of requests. Pay only for what you use.</p></div>
+      <div class="card feature-card"><div class="icon">📊</div><h3>Real-time Analytics</h3><p>CPU, memory, network, and request logs in real-time for every service.</p></div>
+      <div class="card feature-card"><div class="icon">🔐</div><h3>Environment Secrets</h3><p>Securely store API keys, DB credentials, and config variables.</p></div>
+      <div class="card feature-card"><div class="icon">🛡️</div><h3>DDoS Protection</h3><p>Built-in WAF and rate limiting to keep your apps safe.</p></div>
+      <div class="card feature-card"><div class="icon">📧</div><h3>Email Alerts</h3><p>Get notified on deploy success, failure, or when your app goes down.</p></div>
+      <div class="card feature-card"><div class="icon">🔄</div><h3>Rollback</h3><p>Instant rollback to any previous deployment with one click.</p></div>
     </div>
 
-    <div class="hero-stats">
-        <div class="hero-stat"><div class="num" id="totalLinksStat">0</div><div class="label">Links Created</div></div>
-        <div class="hero-stat"><div class="num" id="totalClicksStat">0</div><div class="label">Total Clicks</div></div>
-        <div class="hero-stat"><div class="num" id="uniqueVisitorsStat">0</div><div class="label">Unique Visitors</div></div>
-        <div class="hero-stat"><div class="num" id="activeLinksStat">0</div><div class="label">Active Links</div></div>
-    </div>
-    <div class="scroll-indicator">
-        <div class="mouse"></div>
-        <span>Scroll</span>
-    </div>
-</section>
-
-<!-- DASHBOARD SECTION -->
-<section id="dashSection">
-    <div class="section-label">Analytics Dashboard</div>
-    <h2 class="section-title glow-text">Your <span style="color:#f7c948;">Link Intelligence</span></h2>
-    <p class="section-sub">Monitor performance, track clicks by region, and optimize your campaigns.</p>
-
-    <!-- DASHBOARD TABS -->
-    <div class="dashboard-tabs">
-        <button class="dash-tab active" data-panel="overview" onclick="switchDash('overview')"><i class="fas fa-chart-pie"></i> Overview</button>
-        <button class="dash-tab" data-panel="links" onclick="switchDash('links')"><i class="fas fa-link"></i> My Links</button>
-        <button class="dash-tab" data-panel="qr" onclick="switchDash('qr')"><i class="fas fa-qrcode"></i> QR Codes</button>
-        <button class="dash-tab" data-panel="premium" onclick="switchDash('premium')"><i class="fas fa-crown"></i> Premium</button>
-        <button class="dash-tab" data-panel="contact" onclick="switchDash('contact')"><i class="fas fa-envelope"></i> Contact</button>
+    <div style="margin-top: 48px;">
+      <h3 class="section-title" style="font-size:24px;">Supported Runtimes</h3>
+      <div class="grid-4" style="margin-top: 24px;">
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">📄</div><h3>Static Sites</h3><p>HTML, CSS, JS, React, Vue, Angular, Gatsby, Next.js (SSG)</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🟢</div><h3>Node.js</h3><p>Express, Next.js (SSR), Nest, Fastify, SvelteKit, Nuxt</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🐍</div><h3>Python</h3><p>Django, Flask, FastAPI, Streamlit, Dash</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">☕</div><h3>Java / JVM</h3><p>Spring Boot, Micronaut, Quarkus, Kotlin, Scala</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🦀</div><h3>Rust</h3><p>Actix, Rocket, Axum, Warp</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">💎</div><h3>Ruby</h3><p>Rails, Sinatra, Rack</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🐘</div><h3>PHP</h3><p>Laravel, Symfony, WordPress</p></div>
+        <div class="card" style="text-align:center; padding: 24px;"><div style="font-size:32px; margin-bottom:8px;">🔧</div><h3>Dockerfile</h3><p>Custom Dockerfiles for any stack</p></div>
+      </div>
     </div>
 
-    <!-- PANEL: OVERVIEW -->
-    <div class="dash-panel active" id="panel-overview">
-        <div class="analytics-grid" id="overviewCards">
-            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-link"></i></div><div class="ac-num" id="ovTotalLinks">0</div><div class="ac-label">Total Links</div></div>
-            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-mouse-pointer"></i></div><div class="ac-num" id="ovTotalClicks">0</div><div class="ac-label">Total Clicks</div></div>
-            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-users"></i></div><div class="ac-num" id="ovUnique">0</div><div class="ac-label">Unique Visitors</div></div>
-            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-globe"></i></div><div class="ac-num" id="ovCountries">0</div><div class="ac-label">Countries</div></div>
-            <div class="analytics-card"><div class="ac-icon"><i class="fas fa-chart-line"></i></div><div class="ac-num" id="ovCTR">0%</div><div class="ac-label">Click Rate</div></div>
+    <div style="margin-top: 48px;">
+      <h3 class="section-title" style="font-size:24px;">How It Works</h3>
+      <div class="grid-3" style="counter-reset: step;">
+        <div class="card step-card"><div class="num">1</div><div><h3>Connect GitHub</h3><p>Authorize Z-URL to access your repositories. Select the repo you want to deploy.</p></div></div>
+        <div class="card step-card"><div class="num">2</div><div><h3>Configure Build</h3><p>Choose your runtime, set the build command, start command, and add environment variables.</p></div></div>
+        <div class="card step-card"><div class="num">3</div><div><h3>Deploy</h3><p>Click deploy. We clone, build, and run your app. Get a *.zurl.app URL instantly.</p></div></div>
+        <div class="card step-card"><div class="num">4</div><div><h3>Auto-Deploy</h3><p>Every push to your branch triggers a new build and deploy. Automatic rollback on failure.</p></div></div>
+        <div class="card step-card"><div class="num">5</div><div><h3>Scale Up</h3><p>Upgrade your plan for more resources. Premium gets priority builds, more RAM, custom domains.</p></div></div>
+        <div class="card step-card"><div class="num">6</div><div><h3>Monitor</h3><p>Real-time logs, analytics, CPU/RAM metrics, and uptime monitoring from your dashboard.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING TAB -->
+  <div id="tab-pricing" class="section" style="display:none;">
+    <h2 class="section-title">Choose Your Power Tier</h2>
+    <p class="section-subtitle">From Free to Zeus Elite — pick the plan that matches your ambition.</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>Free</h3>
+        <div class="price">$0 <span>/ forever</span></div>
+        <p class="subtitle">For hobby projects and testing</p>
+        <ul>
+          <li>1 service</li>
+          <li>512 MB RAM</li>
+          <li>0.25 vCPU</li>
+          <li>1 GB storage</li>
+          <li>Community support</li>
+          <li>*.zurl.app subdomain</li>
+          <li>7-day build history</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%;" onclick="showTab('deploy')">Start Free</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="badge">🔥 Most Popular</div>
+        <h3>Premium ZEUS</h3>
+        <div class="price">$1 <span>/ once</span></div>
+        <p class="subtitle">Code: <strong>ZEUS100 — ZEUS199</strong></p>
+        <ul>
+          <li>10 services</li>
+          <li>2 GB RAM</li>
+          <li>1 vCPU</li>
+          <li>10 GB storage</li>
+          <li>Custom domain + SSL</li>
+          <li>Auto-deploy from GitHub</li>
+          <li>Build logs & rollback</li>
+          <li>30-day build history</li>
+          <li>Priority support (WhatsApp)</li>
+        </ul>
+        <button class="btn btn-primary" style="width:100%;" onclick="showCodeModal('premium')">Get Premium</button>
+      </div>
+
+      <div class="pricing-card">
+        <h3>Business ZEUS</h3>
+        <div class="price">$5 <span>/ once</span></div>
+        <p class="subtitle">Code: <strong>ZEUS200 — ZEUS299</strong></p>
+        <ul>
+          <li>25 services</li>
+          <li>4 GB RAM</li>
+          <li>2 vCPU</li>
+          <li>50 GB storage</li>
+          <li>Everything in Premium</li>
+          <li>Team access (5 users)</li>
+          <li>API access</li>
+          <li>Advanced analytics</li>
+          <li>90-day build history</li>
+          <li>DDoS protection</li>
+        </ul>
+        <button class="btn btn-outline" style="width:100%;" onclick="showCodeModal('business')">Get Business</button>
+      </div>
+
+      <div class="pricing-card">
+        <h3>🦅 Zeus Elite</h3>
+        <div class="price">$15 <span>/ once</span></div>
+        <p class="subtitle">Code: <strong>ZEUS300 — ZEUS102+</strong></p>
+        <ul>
+          <li>100 services</li>
+          <li>8 GB RAM</li>
+          <li>4 vCPU</li>
+          <li>200 GB storage</li>
+          <li>Everything in Business</li>
+          <li>Unlimited team members</li>
+          <li>Priority infrastructure</li>
+          <li>Custom Docker images</li>
+          <li>Lifetime build history</li>
+          <li>Direct Zeus support line</li>
+        </ul>
+        <button class="btn btn-warning" style="width:100%;" onclick="showCodeModal('elite')">Go Elite</button>
+      </div>
+    </div>
+
+    <!-- Premium Code Entry -->
+    <div style="margin-top: 60px; text-align: center; background: #12121a; border: 1px solid #1e1e30; border-radius: 16px; padding: 48px 24px;">
+      <h3 style="font-size: 24px; margin-bottom: 8px;">🔑 Unlock Premium with Your Code</h3>
+      <p style="color: #888; margin-bottom: 24px;">Enter your ZEUS premium pass code to unlock the tier you purchased from Zeus.</p>
+      <div class="code-input-wrap">
+        <input type="text" id="premiumCode" placeholder="ZEUS100 — ZEUS999" oninput="this.value = this.value.toUpperCase()" maxlength="10">
+        <button class="btn btn-warning" onclick="activatePremium()">Unlock</button>
+      </div>
+      <p style="color: #666; font-size: 13px; margin-top: 12px;">
+        Don't have a code? <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20to%20buy%20a%20ZEUS%20Premium%20code%20for%20hosting%20%E2%9A%A1" target="_blank" style="color: #7c7cff;">Contact Zeus on WhatsApp →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dashboard" class="section" style="display:none;">
+    <h2 class="section-title">📊 My Dashboard</h2>
+    <p class="section-subtitle">Manage your services, monitor deployments, and view analytics.</p>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="dashboardStats">
+      <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-value" id="statServices">0</div><div class="stat-label">Total Services</div></div>
+      <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statRunning">0</div><div class="stat-label">Running</div></div>
+      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="statDeploys">0</div><div class="stat-label">Total Deployments</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statVisitors">0</div><div class="stat-label">All-Time Visitors</div></div>
+    </div>
+
+    <!-- Services Table -->
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="padding: 20px 24px; border-bottom: 1px solid #1e1e30; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 16px; margin: 0;">Your Services</h3>
+        <button class="btn btn-primary btn-sm" onclick="showTab('deploy')">+ New Service</button>
+      </div>
+      <div class="table-wrap">
+        <table id="servicesTable">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Repo</th>
+              <th>Branch</th>
+              <th>Status</th>
+              <th>URL</th>
+              <th>RAM</th>
+              <th>Uptime</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="servicesBody">
+            <!-- Populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Deploy Logs -->
+    <div style="margin-top: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="font-size: 16px;">📋 Recent Build Logs</h3>
+        <span style="font-size: 12px; color: #666;" id="logTimestamp">Live</span>
+      </div>
+      <div class="log-viewer" id="logViewer">
+        <div class="log-line dim">[Z-URL] Waiting for deployments...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPLOY TAB -->
+  <div id="tab-deploy" class="section" style="display:none;">
+    <div class="deploy-section">
+      <h2>⚡ Deploy from GitHub</h2>
+      <p class="desc">Connect any GitHub repository and deploy in seconds. Auto-builds on every push.</p>
+
+      <!-- Tabs within deploy -->
+      <div class="tabs">
+        <button class="tab active" data-deploytab="new" onclick="switchDeployTab('new')">New Deploy</button>
+        <button class="tab" data-deploytab="existing" onclick="switchDeployTab('existing')">Existing Repos</button>
+        <button class="tab" data-deploytab="docker" onclick="switchDeployTab('docker')">Dockerfile</button>
+      </div>
+
+      <!-- New Deploy Form -->
+      <div id="deploy-new" class="deploy-tab-content">
+        <div class="form-group">
+          <label>GitHub Repository URL</label>
+          <input type="text" id="repoUrl" placeholder="https://github.com/username/repository" value="">
+          <div class="hint">Public or private repo. Make sure it has a startable application.</div>
         </div>
 
-        <div class="chart-container">
-            <h3><i class="fas fa-calendar-alt"></i> Clicks This Week</h3>
-            <div class="bar-chart" id="weeklyChart"></div>
-        </div>
-    </div>
-
-    <!-- PANEL: MY LINKS -->
-    <div class="dash-panel" id="panel-links">
-        <div class="links-table-wrap">
-            <h3><i class="fas fa-list"></i> All Shortened Links</h3>
-            <div class="table-header">
-                <span>Short Link</span>
-                <span>Original URL</span>
-                <span>Clicks</span>
-                <span>Unique</span>
-                <span>Country</span>
-                <span>Action</span>
-            </div>
-            <div id="linksTableBody">
-                <div class="empty-state">
-                    <i class="fas fa-link"></i>
-                    <p>No links yet. Shorten your first link above!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PANEL: QR CODES -->
-    <div class="dash-panel" id="panel-qr">
-        <div class="links-table-wrap">
-            <h3><i class="fas fa-qrcode"></i> Your QR Codes</h3>
-            <div id="qrListBody">
-                <div class="empty-state">
-                    <i class="fas fa-qrcode"></i>
-                    <p>No QR codes generated yet. Shorten a link with QR generation enabled.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PANEL: PREMIUM -->
-    <div class="dash-panel" id="panel-premium">
-        <div class="premium-grid">
-            <div class="premium-card">
-                <h3>Free</h3>
-                <div class="price">$0 <span>/ forever</span></div>
-                <ul>
-                    <li><i class="fas fa-check"></i> 10 Links per Month</li>
-                    <li><i class="fas fa-check"></i> Basic Click Counts</li>
-                    <li><i class="fas fa-check"></i> QR Code Generation</li>
-                    <li><i class="fas fa-times" style="color:#555;"></i> Custom Aliases</li>
-                    <li><i class="fas fa-times" style="color:#555;"></i> Country Analytics</li>
-                    <li><i class="fas fa-times" style="color:#555;"></i> Device Breakdown</li>
-                </ul>
-            </div>
-            <div class="premium-card featured">
-                <div class="prem-badge"><i class="fas fa-crown"></i> BEST VALUE</div>
-                <h3>Premium</h3>
-                <div class="price">$1 <span>/ once</span></div>
-                <ul>
-                    <li><i class="fas fa-check"></i> Unlimited Links</li>
-                    <li><i class="fas fa-check"></i> Real-Time Analytics</li>
-                    <li><i class="fas fa-check"></i> Custom Aliases</li>
-                    <li><i class="fas fa-check"></i> Country + Device Data</li>
-                    <li><i class="fas fa-check"></i> Click Heatmap</li>
-                    <li><i class="fas fa-check"></i> CSV Export</li>
-                    <li><i class="fas fa-check"></i> No Ads</li>
-                </ul>
-            </div>
-            <div class="premium-card">
-                <h3>Business</h3>
-                <div class="price">$5 <span>/ once</span></div>
-                <ul>
-                    <li><i class="fas fa-check"></i> Everything in Premium</li>
-                    <li><i class="fas fa-check"></i> Custom Domain</li>
-                    <li><i class="fas fa-check"></i> Team Access (5 users)</li>
-                    <li><i class="fas fa-check"></i> API Access</li>
-                    <li><i class="fas fa-check"></i> Advanced Filters</li>
-                    <li><i class="fas fa-check"></i> Priority Support</li>
-                    <li><i class="fas fa-check"></i> Lifetime Updates</li>
-                </ul>
-            </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Branch</label>
+            <input type="text" id="branch" value="main" placeholder="main">
+          </div>
+          <div class="form-group">
+            <label>Runtime</label>
+            <select id="runtime">
+              <option value="static">Static Site (HTML/JS/CSS)</option>
+              <option value="node">Node.js</option>
+              <option value="python">Python</option>
+              <option value="ruby">Ruby</option>
+              <option value="php">PHP</option>
+              <option value="rust">Rust</option>
+              <option value="java">Java/JVM</option>
+              <option value="docker">Dockerfile (Custom)</option>
+            </select>
+          </div>
         </div>
 
-        <div class="premium-code-section">
-            <h3><i class="fas fa-key" style="color:#f7c948;"></i> Unlock with Code</h3>
-            <p>Enter your premium code or contact Zeus to get one.</p>
-            <div class="premium-input-group">
-                <input type="text" id="premiumCodeInput" placeholder="Enter Code" maxlength="10" autocomplete="off">
-                <button onclick="redeemPremiumCode()"><i class="fas fa-unlock"></i> Unlock</button>
-            </div>
-            <div class="premium-code-msg" id="premiumCodeMsg"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Build Command</label>
+            <input type="text" id="buildCmd" placeholder="npm install && npm run build" value="npm install">
+            <div class="hint">Leave empty for static sites. Example: <code>npm install && npm run build</code></div>
+          </div>
+          <div class="form-group">
+            <label>Start Command</label>
+            <input type="text" id="startCmd" placeholder="npm start" value="npm start">
+            <div class="hint">How to run your app. Example: <code>npm start</code>, <code>python app.py</code></div>
+          </div>
         </div>
-    </div>
 
-    <!-- PANEL: CONTACT -->
-    <div class="dash-panel" id="panel-contact">
-        <div class="wa-banner">
-            <i class="fab fa-whatsapp"></i>
-            <h3>Chat with Zeus</h3>
-            <p>Contact the owner directly for premium codes, support, or custom domain setup.</p>
-            <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20ZEUS%20LINKS%20Premium%20%F0%9F%94%97" target="_blank" class="wa-btn">
-                <i class="fab fa-whatsapp"></i> Message Zeus
-            </a>
-            <p style="margin-top:14px;font-size:0.75rem;color:#555;">Owner: Zeus · +234 906 676 0078</p>
+        <div class="form-group">
+          <label>Service Name</label>
+          <input type="text" id="serviceName" placeholder="my-awesome-app">
+          <div class="hint">Will be available at <code>my-awesome-app.zurl.app</code></div>
         </div>
+
+        <div class="form-group">
+          <label>Environment Variables <span style="color: #666; font-weight: 400;">(optional)</span></label>
+          <div id="envVars">
+            <div class="env-row">
+              <input type="text" placeholder="KEY" class="env-key">
+              <input type="text" placeholder="VALUE" class="env-val">
+              <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 8px;" onclick="addEnvVar()">+ Add Variable</button>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+          <button class="btn btn-primary" onclick="deployService()" style="font-size: 16px; padding: 14px 40px;">🚀 Deploy Now</button>
+          <button class="btn btn-outline" onclick="showTab('dashboard')">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Existing Repos Tab -->
+      <div id="deploy-existing" class="deploy-tab-content" style="display:none;">
+        <div class="form-group">
+          <label>Select a previously connected repo</label>
+          <select id="existingRepo" onchange="fillExistingRepo()">
+            <option value="">— No repos connected yet. Deploy one first —</option>
+          </select>
+        </div>
+        <div id="existingRepoDetails" style="background: #0a0a0f; border-radius: 10px; padding: 20px; margin-top: 16px; display: none;">
+          <p style="color: #888; margin-bottom: 12px;">Last deployment settings will be re-used. Trigger a fresh build below.</p>
+          <button class="btn btn-primary" onclick="redeployExisting()">🔄 Re-deploy</button>
+        </div>
+      </div>
+
+      <!-- Docker Tab -->
+      <div id="deploy-docker" class="deploy-tab-content" style="display:none;">
+        <div class="form-group">
+          <label>GitHub Repository with Dockerfile</label>
+          <input type="text" id="dockerRepoUrl" placeholder="https://github.com/username/repo-with-dockerfile">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Branch</label>
+            <input type="text" id="dockerBranch" value="main">
+          </div>
+          <div class="form-group">
+            <label>Dockerfile Path</label>
+            <input type="text" id="dockerfilePath" value="Dockerfile" placeholder="Dockerfile">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service Name</label>
+          <input type="text" id="dockerServiceName" placeholder="my-docker-app">
+        </div>
+        <button class="btn btn-primary" onclick="deployDocker()" style="font-size: 16px; padding: 14px 40px;">🚀 Deploy Docker</button>
+      </div>
     </div>
-</section>
+  </div>
+
+  <!-- URL Shortener Tab (Legacy) -->
+  <div id="tab-shortener" class="section" style="display:none;">
+    <h2 class="section-title">🔗 URL Shortener</h2>
+    <p class="section-subtitle">Shorten your links and track analytics — from the same platform.</p>
+    <div style="text-align: center;">
+      <a href="https://emmyjosh65.github.io/Z-URL/" target="_blank" class="btn btn-primary">Go to URL Shortener →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- PREMIUM CODE MODAL -->
+<div class="modal-overlay" id="premiumModal">
+  <div class="modal">
+    <h2>🔑 Unlock Premium</h2>
+    <p>Enter your Zeus premium code to activate this tier.</p>
+    <div class="form-group">
+      <label>Premium Code</label>
+      <input type="text" id="modalCode" placeholder="ZEUS100 — ZEUS999" oninput="this.value = this.value.toUpperCase()" maxlength="10">
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-primary" onclick="activateCodeFromModal()">Activate</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+    <p style="font-size: 13px; color: #666; margin-top: 16px;">
+      No code? <a href="https://wa.me/2349066760078?text=Hey%20Zeus!%20I%20want%20to%20buy%20a%20ZEUS%20Premium%20code" target="_blank">Buy from Zeus →</a>
+    </p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- FOOTER -->
 <footer>
-    <p>© 2026 <a href="#">ZEUS LINKS</a> · Built by Zeus · URL Shortener + Analytics</p>
+  <p style="margin-bottom: 8px;">⚡ Z-URL · Built by <a href="https://wa.me/2349066760078" target="_blank">Zeus</a> · +234 906 676 0078</p>
+  <p>GitHub-Powered Deployment Platform · Premium Pass: ZEUS100-ZEUS999</p>
 </footer>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-    <i class="fas fa-info-circle"></i>
-    <span id="toastMsg">Hello!</span>
-</div>
-
 <script>
-    // ========================
-    // STATE
-    // ========================
-    let premiumUnlocked = localStorage.getItem('zeusPremium') === 'true';
-    let savedLinks = JSON.parse(localStorage.getItem('zeusLinks') || '[]');
-    let clickData = JSON.parse(localStorage.getItem('zeusClickData') || '{}');
+  // ===================== STORAGE =====================
+  const DB_KEY = 'zurl_hosting_data';
+  let db = loadDB();
 
-    const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    const COUNTRIES = ['USA','Nigeria','UK','Canada','Germany','India','Brazil','Australia','France','Japan'];
-    const DEVICES = ['Mobile','Desktop','Tablet'];
+  function loadDB() {
+    try {
+      const raw = localStorage.getItem(DB_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return {
+      services: [],
+      deployments: [],
+      premium: { tier: 'free', code: null, activatedAt: null },
+      stats: { totalDeploys: 0, totalVisitors: 0 }
+    };
+  }
 
-    // ========================
-    // PARTICLES
-    // ========================
-    const canvas = document.getElementById('particles-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
+  function saveDB() {
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+  }
 
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resizeCanvas();
+  // ===================== NAVIGATION =====================
+  function showTab(tabId) {
+    const tabs = ['features', 'pricing', 'dashboard', 'deploy', 'shortener'];
+    tabs.forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.style.display = t === tabId ? 'block' : 'none';
+    });
+    if (tabId === 'dashboard') refreshDashboard();
+    window.scrollTo(0, 0);
+  }
 
-    class Particle {
-        constructor() { this.reset(); }
-        reset() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2.5 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 0.4;
-            this.speedY = (Math.random() - 0.5) * 0.4;
-            this.opacity = Math.random() * 0.4 + 0.1;
-            this.color = Math.random() > 0.7 ? '#f7c948' : '#ffffff';
+  // ===================== DEPLOY TABS =====================
+  function switchDeployTab(tab) {
+    document.querySelectorAll('[data-deploytab]').forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-deploytab="${tab}"]`).classList.add('active');
+    document.querySelectorAll('.deploy-tab-content').forEach(c => c.style.display = 'none');
+    document.getElementById('deploy-' + tab).style.display = 'block';
+  }
+
+  // ===================== ENV VARS =====================
+  function addEnvVar(keyVal, valVal) {
+    const container = document.getElementById('envVars');
+    const row = document.createElement('div');
+    row.className = 'env-row';
+    row.innerHTML = `
+      <input type="text" placeholder="KEY" class="env-key" value="${keyVal || ''}">
+      <input type="text" placeholder="VALUE" class="env-val" value="${valVal || ''}">
+      <button class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(row);
+  }
+
+  // ===================== GET ENV VARS =====================
+  function getEnvVars() {
+    const vars = {};
+    document.querySelectorAll('.env-row').forEach(row => {
+      const key = row.querySelector('.env-key').value.trim();
+      const val = row.querySelector('.env-val').value.trim();
+      if (key) vars[key] = val;
+    });
+    return vars;
+  }
+
+  // ===================== GENERATE ID =====================
+  function genId() {
+    return 'svc-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 6);
+  }
+
+  // ===================== SIMULATE BUILD LOGS =====================
+  function simulateBuild(serviceId, serviceName, repoUrl, branch, runtime, buildCmd, startCmd) {
+    const steps = [
+      { msg: `[Z-URL] Initializing deployment for ${serviceName}...`, delay: 300, type: 'info' },
+      { msg: `[Git] Cloning ${repoUrl} (branch: ${branch})...`, delay: 800, type: '' },
+      { msg: `[Git] Repository cloned successfully.`, delay: 400, type: '' },
+      { msg: `[Build] Detected runtime: ${runtime}`, delay: 300, type: 'info' },
+      { msg: `[Build] Running build command: ${buildCmd}`, delay: 500, type: '' },
+      { msg: `[Build] Installing dependencies...`, delay: 1000, type: '' },
+      { msg: `[Build] Dependencies installed (${Math.floor(Math.random() * 50) + 10} packages)`, delay: 400, type: '' },
+      { msg: `[Build] Build completed successfully.`, delay: 300, type: '' },
+      { msg: `[Deploy] Starting application with: ${startCmd}`, delay: 500, type: '' },
+      { msg: `[Deploy] Application started on port ${Math.floor(Math.random() * 9000) + 3000}`, delay: 600, type: '' },
+      { msg: `[Z-URL] ✅ ${serviceName} is LIVE at https://${serviceName}.zurl.app`, delay: 500, type: 'success' },
+    ];
+
+    let totalDelay = 0;
+    steps.forEach((step, i) => {
+      totalDelay += step.delay;
+      setTimeout(() => {
+        addLog(step.msg, step.type || '');
+        if (i === steps.length - 1) {
+          // Mark service as running
+          const svc = db.services.find(s => s.id === serviceId);
+          if (svc) {
+            svc.status = 'running';
+            svc.lastDeployed = new Date().toISOString();
+            db.stats.totalDeploys = (db.stats.totalDeploys || 0) + 1;
+            saveDB();
+            refreshDashboard();
+          }
         }
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-            if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-        }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = this.color;
-            ctx.globalAlpha = this.opacity;
-            ctx.fill();
-        }
-    }
-    for (let i = 0; i < 100; i++) particles.push(new Particle());
-
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let p of particles) { p.update(); p.draw(); }
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 100) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = 'rgba(247,201,72,0.03)';
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                }
-            }
-        }
-        requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-    window.addEventListener('resize', resizeCanvas);
-
-    // ========================
-    // PRELOADER
-    // ========================
-    window.addEventListener('load', () => {
-        setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 2000);
+      }, totalDelay);
     });
 
-    // ========================
-    // NAV
-    // ========================
-    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
-    function closeNav() { document.getElementById('navLinks').classList.remove('open'); }
-    window.addEventListener('scroll', () => {
-        const nav = document.getElementById('navbar');
-        if (window.scrollY > 80) nav.classList.add('scrolled');
-        else nav.classList.remove('scrolled');
+    // Mark as building immediately
+    const svc = db.services.find(s => s.id === serviceId);
+    if (svc) {
+      svc.status = 'building';
+      svc.buildLog = svc.buildLog || [];
+      saveDB();
+      refreshDashboard();
+    }
+  }
+
+  function addLog(msg, type) {
+    const viewer = document.getElementById('logViewer');
+    if (!viewer) return;
+    const line = document.createElement('div');
+    line.className = 'log-line';
+    if (type) line.classList.add(type);
+    line.textContent = msg;
+    viewer.appendChild(line);
+    viewer.scrollTop = viewer.scrollHeight;
+  }
+
+  // ===================== DEPLOY SERVICE =====================
+  function deployService() {
+    const repoUrl = document.getElementById('repoUrl').value.trim();
+    const branch = document.getElementById('branch').value.trim() || 'main';
+    const runtime = document.getElementById('runtime').value;
+    const buildCmd = document.getElementById('buildCmd').value.trim();
+    const startCmd = document.getElementById('startCmd').value.trim();
+    const serviceName = document.getElementById('serviceName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+
+    if (!repoUrl) { showToast('Please enter a GitHub repository URL', 'error'); return; }
+    if (!serviceName) { showToast('Please enter a service name', 'error'); return; }
+
+    const id = genId();
+    const env = getEnvVars();
+
+    const service = {
+      id,
+      name: serviceName,
+      repo: repoUrl,
+      branch,
+      runtime,
+      buildCmd: buildCmd || '(none)',
+      startCmd: startCmd || '(none)',
+      env,
+      status: 'queued',
+      url: `https://${serviceName}.zurl.app`,
+      createdAt: new Date().toISOString(),
+      lastDeployed: null,
+      tier: db.premium.tier || 'free',
+      uptime: '0%',
+      ram: db.premium.tier === 'premium' ? '2 GB' : db.premium.tier === 'business' ? '4 GB' : db.premium.tier === 'elite' ? '8 GB' : '512 MB'
+    };
+
+    db.services.push(service);
+    db.stats.totalDeploys = (db.stats.totalDeploys || 0) + 1;
+    saveDB();
+
+    // Save to existing repos
+    const existingRepos = JSON.parse(localStorage.getItem('zurl_existing_repos') || '[]');
+    if (!existingRepos.find(r => r.url === repoUrl)) {
+      existingRepos.push({ url: repoUrl, branch, runtime, buildCmd, startCmd, name: serviceName });
+      localStorage.setItem('zurl_existing_repos', JSON.stringify(existingRepos));
+    }
+
+    // Clear form
+    document.getElementById('repoUrl').value = '';
+    document.getElementById('serviceName').value = '';
+
+    showToast(`🚀 Deploying ${serviceName}...`, 'success');
+    showTab('dashboard');
+
+    // Start build simulation
+    setTimeout(() => {
+      simulateBuild(id, serviceName, repoUrl, branch, runtime, buildCmd || 'echo "no build command"', startCmd || 'echo "no start command"');
+    }, 500);
+  }
+
+  // ===================== DEPLOY DOCKER =====================
+  function deployDocker() {
+    const repoUrl = document.getElementById('dockerRepoUrl').value.trim();
+    const branch = document.getElementById('dockerBranch').value.trim() || 'main';
+    const dockerfile = document.getElementById('dockerfilePath').value.trim() || 'Dockerfile';
+    const serviceName = document.getElementById('dockerServiceName').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+
+    if (!repoUrl) { showToast('Please enter a GitHub repository URL', 'error'); return; }
+    if (!serviceName) { showToast('Please enter a service name', 'error'); return; }
+
+    document.getElementById('repoUrl').value = repoUrl;
+    document.getElementById('branch').value = branch;
+    document.getElementById('runtime').value = 'docker';
+    document.getElementById('buildCmd').value = `docker build -f ${dockerfile} -t ${serviceName} .`;
+    document.getElementById('startCmd').value = `docker run -p 80:80 ${serviceName}`;
+    document.getElementById('serviceName').value = serviceName;
+
+    switchDeployTab('new');
+    deployService();
+  }
+
+  // ===================== EXISTING REPOS =====================
+  function fillExistingRepo() {
+    const sel = document.getElementById('existingRepo');
+    const details = document.getElementById('existingRepoDetails');
+    if (sel.value) {
+      details.style.display = 'block';
+      const data = JSON.parse(sel.value);
+      document.getElementById('repoUrl').value = data.url;
+      document.getElementById('branch').value = data.branch;
+      document.getElementById('runtime').value = data.runtime;
+      document.getElementById('buildCmd').value = data.buildCmd || '';
+      document.getElementById('startCmd').value = data.startCmd || '';
+      document.getElementById('serviceName').value = data.name || '';
+    } else {
+      details.style.display = 'none';
+    }
+  }
+
+  function redeployExisting() {
+    const sel = document.getElementById('existingRepo');
+    if (!sel.value) { showToast('Select a repo first', 'error'); return; }
+    const data = JSON.parse(sel.value);
+    document.getElementById('repoUrl').value = data.url;
+    document.getElementById('branch').value = data.branch;
+    document.getElementById('runtime').value = data.runtime;
+    document.getElementById('buildCmd').value = data.buildCmd || '';
+    document.getElementById('startCmd').value = data.startCmd || '';
+    document.getElementById('serviceName').value = (data.name || 'my-app') + '-' + Date.now().toString(36);
+    switchDeployTab('new');
+    showToast('Settings loaded. Click Deploy Now.', 'success');
+  }
+
+  function loadExistingRepos() {
+    const existingRepos = JSON.parse(localStorage.getItem('zurl_existing_repos') || '[]');
+    const sel = document.getElementById('existingRepo');
+    sel.innerHTML = '<option value="">— Select a repo —</option>';
+    existingRepos.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = JSON.stringify(r);
+      opt.textContent = r.name || r.url.split('/').pop();
+      sel.appendChild(opt);
+    });
+  }
+
+  // ===================== DASHBOARD =====================
+  function refreshDashboard() {
+    const services = db.services || [];
+    const running = services.filter(s => s.status === 'running');
+    const building = services.filter(s => s.status === 'building');
+
+    document.getElementById('statServices').textContent = services.length;
+    document.getElementById('statRunning').textContent = running.length;
+    document.getElementById('statDeploys').textContent = db.stats.totalDeploys || 0;
+    document.getElementById('statVisitors').textContent = db.stats.totalVisitors || 0;
+
+    const tbody = document.getElementById('servicesBody');
+    if (services.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: #666;">No services yet. <a href="#" onclick="showTab('deploy')" style="color:#7c7cff;">Deploy your first one →</a></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = services.map(s => {
+      const statusClass = s.status === 'running' ? 'status-running' : s.status === 'building' ? 'status-building' : 'status-failed';
+      const statusLabel = s.status.charAt(0).toUpperCase() + s.status.slice(1);
+      const uptime = s.status === 'running' ? '99.9%' : '0%';
+      return `<tr>
+        <td><strong>${s.name}</strong></td>
+        <td style="font-size:13px; color:#888;">${s.repo.split('/').pop()}</td>
+        <td>${s.branch}</td>
+        <td><span class="${statusClass}">${statusLabel}</span></td>
+        <td><a href="${s.url}" target="_blank" style="font-size:13px;">${s.name}.zurl.app ↗</a></td>
+        <td>${s.ram}</td>
+        <td>${uptime}</td>
+        <td>
+          <button class="btn btn-sm ${s.status === 'running' ? 'btn-danger' : 'btn-primary'}" onclick="${s.status === 'running' ? `stopService('${s.id}')` : `restartService('${s.id}')`}">
+            ${s.status === 'running' ? 'Stop' : 'Restart'}
+          </button>
+          <button class="btn btn-sm btn-outline" style="margin-left:4px;" onclick="viewLogs('${s.id}')">Logs</button>
+          <button class="btn btn-sm btn-outline" style="margin-left:4px;" onclick="deleteService('${s.id}')" title="Delete">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    updateBuildLogs();
+    loadExistingRepos();
+    updatePricingDisplay();
+  }
+
+  function stopService(id) {
+    const svc = db.services.find(s => s.id === id);
+    if (svc) {
+      svc.status = 'stopped';
+      saveDB();
+      refreshDashboard();
+      showToast(`🛑 ${svc.name} stopped`, 'warning');
+    }
+  }
+
+  function restartService(id) {
+    const svc = db.services.find(s => s.id === id);
+    if (svc) {
+      svc.status = 'building';
+      saveDB();
+      refreshDashboard();
+      showToast(`🔄 Restarting ${svc.name}...`, 'success');
+      setTimeout(() => {
+        svc.status = 'running';
+        addLog(`[Z-URL] ✅ ${svc.name} restarted successfully`, '');
+        saveDB();
+        refreshDashboard();
+      }, 2000);
+    }
+  }
+
+  function deleteService(id) {
+    if (!confirm('Delete this service? This cannot be undone.')) return;
+    db.services = db.services.filter(s => s.id !== id);
+    saveDB();
+    refreshDashboard();
+    showToast('Service deleted', 'warning');
+  }
+
+  function viewLogs(id) {
+    const svc = db.services.find(s => s.id === id);
+    if (!svc) return;
+    const viewer = document.getElementById('logViewer');
+    viewer.innerHTML = '';
+    addLog(`[Z-URL] === Logs for ${svc.name} ===`, 'info');
+    addLog(`[Repo] ${svc.repo} (${svc.branch})`, '');
+    addLog(`[Runtime] ${svc.runtime}`, '');
+    addLog(`[Build] ${svc.buildCmd}`, '');
+    addLog(`[Start] ${svc.startCmd}`, '');
+    addLog(`[Status] ${svc.status}`, svc.status === 'running' ? 'success' : svc.status === 'failed' ? 'error' : '');
+    addLog(`[URL] ${svc.url}`, 'info');
+    if (svc.status === 'running') {
+      addLog(`[Uptime] Service is healthy ✅`, '');
+    }
+    showToast('📋 Logs loaded in viewer', 'success');
+  }
+
+  function updateBuildLogs() {
+    const services = db.services || [];
+    if (services.length === 0) return;
+    const latest = services[services.length - 1];
+    if (latest.status === 'running' || latest.status === 'building') {
+      // Logs are streaming
+    }
+  }
+
+  // ===================== PREMIUM CODES =====================
+  const VALID_CODES = {
+    'ZEUS100': 'premium', 'ZEUS101': 'premium', 'ZEUS102': 'premium',
+    'ZEUS103': 'premium', 'ZEUS104': 'premium', 'ZEUS105': 'premium',
+    'ZEUS106': 'premium', 'ZEUS107': 'premium', 'ZEUS108': 'premium',
+    'ZEUS109': 'premium', 'ZEUS110': 'premium', 'ZEUS111': 'premium',
+    'ZEUS112': 'premium', 'ZEUS113': 'premium', 'ZEUS114': 'premium',
+    'ZEUS115': 'premium', 'ZEUS116': 'premium', 'ZEUS117': 'premium',
+    'ZEUS118': 'premium', 'ZEUS119': 'premium', 'ZEUS120': 'premium',
+    'ZEUS121': 'premium', 'ZEUS122': 'premium', 'ZEUS123': 'premium',
+    'ZEUS124': 'premium', 'ZEUS125': 'premium', 'ZEUS126': 'premium',
+    'ZEUS127': 'premium', 'ZEUS128': 'premium', 'ZEUS129': 'premium',
+    'ZEUS130': 'premium', 'ZEUS131': 'premium', 'ZEUS132': 'premium',
+    'ZEUS133': 'premium', 'ZEUS134': 'premium', 'ZEUS135': 'premium',
+    'ZEUS136': 'premium', 'ZEUS137': 'premium', 'ZEUS138': 'premium',
+    'ZEUS139': 'premium', 'ZEUS140': 'premium', 'ZEUS141': 'premium',
+    'ZEUS142': 'premium', 'ZEUS143': 'premium', 'ZEUS144': 'premium',
+    'ZEUS145': 'premium', 'ZEUS146': 'premium', 'ZEUS147': 'premium',
+    'ZEUS148': 'premium', 'ZEUS149': 'premium', 'ZEUS150': 'premium',
+    'ZEUS151': 'premium', 'ZEUS152': 'premium', 'ZEUS153': 'premium',
+    'ZEUS154': 'premium', 'ZEUS155': 'premium', 'ZEUS156': 'premium',
+    'ZEUS157': 'premium', 'ZEUS158': 'premium', 'ZEUS159': 'premium',
+    'ZEUS160': 'premium', 'ZEUS161': 'premium', 'ZEUS162': 'premium',
+    'ZEUS163': 'premium', 'ZEUS164': 'premium', 'ZEUS165': 'premium',
+    'ZEUS166': 'premium', 'ZEUS167': 'premium', 'ZEUS168': 'premium',
+    'ZEUS169': 'premium', 'ZEUS170': 'premium', 'ZEUS171': 'premium',
+    'ZEUS172': 'premium', 'ZEUS173': 'premium', 'ZEUS174': 'premium',
+    'ZEUS175': 'premium', 'ZEUS176': 'premium', 'ZEUS177': 'premium',
+    'ZEUS178': 'premium', 'ZEUS179': 'premium', 'ZEUS180': 'premium',
+    'ZEUS181': 'premium', 'ZEUS182': 'premium', 'ZEUS183': 'premium',
+    'ZEUS184': 'premium', 'ZEUS185': 'premium', 'ZEUS186': 'premium',
+    'ZEUS187': 'premium', 'ZEUS188': 'premium', 'ZEUS189': 'premium',
+    'ZEUS190': 'premium', 'ZEUS191': 'premium', 'ZEUS192': 'premium',
+    'ZEUS193': 'premium', 'ZEUS194': 'premium', 'ZEUS195': 'premium',
+    'ZEUS196': 'premium', 'ZEUS197': 'premium', 'ZEUS198': 'premium',
+    'ZEUS199': 'premium',
+    'ZEUS200': 'business', 'ZEUS201': 'business', 'ZEUS202': 'business',
+    'ZEUS210': 'business', 'ZEUS220': 'business', 'ZEUS230': 'business',
+    'ZEUS240': 'business', 'ZEUS250': 'business', 'ZEUS260': 'business',
+    'ZEUS270': 'business', 'ZEUS280': 'business', 'ZEUS290': 'business',
+    'ZEUS299': 'business',
+    'ZEUS300': 'elite', 'ZEUS301': 'elite', 'ZEUS302': 'elite',
+    'ZEUS310': 'elite', 'ZEUS320': 'elite', 'ZEUS330': 'elite',
+    'ZEUS340': 'elite', 'ZEUS350': 'elite', 'ZEUS400': 'elite',
+    'ZEUS500': 'elite', 'ZEUS600': 'elite', 'ZEUS700': 'elite',
+    'ZEUS800': 'elite', 'ZEUS900': 'elite', 'ZEUS999': 'elite',
+    'ZEUS001': 'elite', 'ZEUS002': 'elite', 'ZEUS003': 'elite',
+    'ZEUS004': 'elite', 'ZEUS005': 'elite', 'ZEUS010': 'elite',
+    'ZEUS020': 'elite', 'ZEUS050': 'elite', 'ZEUS1000': 'elite'
+  };
+
+  let pendingModalTier = 'premium';
+
+  function showCodeModal(tier) {
+    pendingModalTier = tier;
+    document.getElementById('modalCode').value = '';
+    document.getElementById('premiumModal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('premiumModal').classList.remove('active');
+  }
+
+  function activateCodeFromModal() {
+    const code = document.getElementById('modalCode').value.trim().toUpperCase();
+    if (!code) { showToast('Please enter a premium code', 'error'); return; }
+    activateCode(code, pendingModalTier);
+    closeModal();
+  }
+
+  function activatePremium() {
+    const code = document.getElementById('premiumCode').value.trim().toUpperCase();
+    if (!code) { showToast('Please enter a premium code', 'error'); return; }
+    activateCode(code, 'auto');
+  }
+
+  function activateCode(code, expectedTier) {
+    // Check if code exists
+    const tier = VALID_CODES[code];
+    if (!tier) {
+      showToast('❌ Invalid premium code. Contact Zeus on WhatsApp.', 'error');
+      return;
+    }
+
+    // Check if already used
+    const usedCodes = JSON.parse(localStorage.getItem('zurl_used_codes') || '[]');
+    if (usedCodes.includes(code)) {
+      showToast('⚠️ This code has already been used.', 'warning');
+      return;
+    }
+
+    // Activate
+    usedCodes.push(code);
+    localStorage.setItem('zurl_used_codes', JSON.stringify(usedCodes));
+
+    const tierNames = { premium: 'Premium ZEUS 🔷', business: 'Business ZEUS 💼', elite: 'Zeus Elite 🦅' };
+
+    db.premium = {
+      tier: tier,
+      code: code,
+      activatedAt: new Date().toISOString()
+    };
+
+    // Upgrade all existing services
+    const ramMap = { premium: '2 GB', business: '4 GB', elite: '8 GB' };
+    db.services.forEach(s => {
+      s.ram = ramMap[tier] || '512 MB';
+      s.tier = tier;
     });
 
-    // ========================
-    // DASHBOARD SWITCH
-    // ========================
-    function switchDash(panel, el) {
-        document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('panel-' + panel).classList.add('active');
-        document.querySelectorAll(`.dash-tab[data-panel="${panel}"]`).forEach(t => t.classList.add('active'));
-        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-        if (el) el.classList.add('active');
+    saveDB();
+    refreshDashboard();
+    updatePricingDisplay();
+    showToast(`✅ ${tierNames[tier] || 'Premium'} activated with code ${code}!`, 'success');
+    document.getElementById('premiumCode').value = '';
+  }
 
-        if (panel === 'overview') updateOverview();
-        if (panel === 'links') renderLinksTable();
-        if (panel === 'qr') renderQRList();
-
-        document.getElementById('dashSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // ========================
-    // TOGGLE CUSTOM SLUG
-    // ========================
-    function toggleCustomSlug() {
-        const checked = document.getElementById('customSlugCheck').checked;
-        const input = document.getElementById('customSlugInput');
-        input.style.display = checked ? 'block' : 'none';
-        input.disabled = !checked;
-    }
-
-    // ========================
-    // SHORTEN LINK ENGINE
-    // ========================
-    function generateSlug() {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let slug = '';
-        for (let i = 0; i < 6; i++) slug += chars.charAt(Math.floor(Math.random() * chars.length));
-        return slug;
-    }
-
-    function shortenLink() {
-        const urlInput = document.getElementById('urlInput');
-        const btn = document.getElementById('shortenBtn');
-        let url = urlInput.value.trim();
-
-        if (!url) {
-            showToast('Please enter a URL to shorten.', 'error');
-            return;
-        }
-
-        // Add https if missing
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
-        }
-
-        // Validate
-        try { new URL(url); } catch(e) {
-            showToast('Invalid URL. Please enter a valid link.', 'error');
-            return;
-        }
-
-        // Check premium for custom slug
-        const useCustomSlug = document.getElementById('customSlugCheck').checked;
-        let slug = generateSlug();
-
-        if (useCustomSlug) {
-            if (!premiumUnlocked) {
-                showToast('Custom aliases are a Premium feature. Upgrade to use!', 'error');
-                switchDash('premium');
-                return;
-            }
-            const customSlug = document.getElementById('customSlugInput').value.trim();
-            if (!customSlug) {
-                showToast('Please enter a custom alias.', 'error');
-                return;
-            }
-            if (savedLinks.find(l => l.slug === customSlug)) {
-                showToast('This alias is already taken. Choose another.', 'error');
-                return;
-            }
-            slug = customSlug;
-        }
-
-        // Check monthly limit for free
-        if (!premiumUnlocked) {
-            const thisMonth = savedLinks.filter(l => {
-                const d = new Date(l.created);
-                const now = new Date();
-                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-            }).length;
-            if (thisMonth >= 10) {
-                showToast('Free tier: 10 links/month. Upgrade for unlimited!', 'error');
-                switchDash('premium');
-                return;
-            }
-        }
-
-        // Simulate country & device
-        const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
-        const device = DEVICES[Math.floor(Math.random() * DEVICES.length)];
-
-        // Create link
-        const link = {
-            id: Date.now(),
-            slug: slug,
-            original: url,
-            short: 'zeus.link/' + slug,
-            created: new Date().toISOString(),
-            clicks: 0,
-            unique: 0,
-            country: country,
-            device: device,
-            qr: document.getElementById('generateQr').checked
-        };
-
-        savedLinks.unshift(link);
-        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
-
-        // Show result
-        const resultBox = document.getElementById('resultBox');
-        const resultLink = document.getElementById('resultLink');
-        resultLink.textContent = 'zeus.link/' + slug;
-        resultBox.classList.add('show');
-
-        // Update stats
-        updateHeroStats();
-        updateOverview();
-        renderLinksTable();
-        renderQRList();
-
-        showToast('Link shortened! Copy it now.', 'success');
-        btn.disabled = true;
-        setTimeout(() => btn.disabled = false, 1000);
-    }
-
-    // ========================
-    // ENTER KEY SUPPORT
-    // ========================
-    document.getElementById('urlInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') shortenLink();
+  function updatePricingDisplay() {
+    const tier = db.premium.tier || 'free';
+    const code = db.premium.code || '—';
+    const cards = document.querySelectorAll('.pricing-card');
+    cards.forEach((card, i) => {
+      const btn = card.querySelector('button');
+      if (btn) {
+        if (tier === 'premium' && i === 1) btn.textContent = '✅ Active';
+        else if (tier === 'business' && i === 2) btn.textContent = '✅ Active';
+        else if (tier === 'elite' && i === 3) btn.textContent = '✅ Active';
+      }
     });
+  }
 
-    // ========================
-    // RESULT ACTIONS
-    // ========================
-    function copyResult() {
-        const text = document.getElementById('resultLink').textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Copied to clipboard!', 'success');
-        }).catch(() => {
-            // Fallback
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            showToast('Copied!', 'success');
-        });
+  // ===================== TOAST =====================
+  function showToast(msg, type) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast ' + (type || '');
+    toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ===================== MISC =====================
+  // Click outside modal to close
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal-overlay')) closeModal();
+  });
+
+  // ===================== INIT =====================
+  document.addEventListener('DOMContentLoaded', function() {
+    // Show features tab by default
+    showTab('features');
+    loadExistingRepos();
+    updatePricingDisplay();
+
+    // If there are services already, show count
+    refreshDashboard();
+
+    // Default env var row
+    if (document.querySelectorAll('.env-row').length === 0) {
+      addEnvVar('', '');
     }
-
-    function openResult() {
-        window.open('https://' + document.getElementById('resultLink').textContent, '_blank');
-    }
-
-    // ========================
-    // SIMULATE CLICK (for demo)
-    // ========================
-    function simulateClick(slug) {
-        if (!premiumUnlocked) return;
-        const link = savedLinks.find(l => l.slug === slug);
-        if (!link) return;
-
-        link.clicks++;
-        link.unique = Math.min(link.unique + Math.random() > 0.3 ? 1 : 0, link.clicks);
-
-        // Track by day for chart
-        const today = DAYS[new Date().getDay()];
-        if (!clickData[today]) clickData[today] = 0;
-        clickData[today] = (clickData[today] || 0) + 1;
-        localStorage.setItem('zeusClickData', JSON.stringify(clickData));
-        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
-
-        updateHeroStats();
-        updateOverview();
-        renderLinksTable();
-        renderChart();
-    }
-
-    // ========================
-    // HERO STATS
-    // ========================
-    function updateHeroStats() {
-        const total = savedLinks.length;
-        const clicks = savedLinks.reduce((sum, l) => sum + l.clicks, 0);
-        const unique = savedLinks.reduce((sum, l) => sum + l.unique, 0);
-        const active = savedLinks.filter(l => l.clicks > 0).length;
-
-        document.getElementById('totalLinksStat').textContent = total;
-        document.getElementById('totalClicksStat').textContent = clicks;
-        document.getElementById('uniqueVisitorsStat').textContent = unique;
-        document.getElementById('activeLinksStat').textContent = active;
-    }
-
-    // ========================
-    // OVERVIEW
-    // ========================
-    function updateOverview() {
-        const total = savedLinks.length;
-        const clicks = savedLinks.reduce((sum, l) => sum + l.clicks, 0);
-        const unique = savedLinks.reduce((sum, l) => sum + l.unique, 0);
-        const countries = new Set(savedLinks.map(l => l.country)).size;
-        const ctr = clicks > 0 ? Math.round((unique / clicks) * 100) : 0;
-
-        document.getElementById('ovTotalLinks').textContent = total;
-        document.getElementById('ovTotalClicks').textContent = clicks;
-        document.getElementById('ovUnique').textContent = unique;
-        document.getElementById('ovCountries').textContent = countries;
-        document.getElementById('ovCTR').textContent = ctr + '%';
-
-        renderChart();
-    }
-
-    // ========================
-    // WEEKLY CHART
-    // ========================
-    function renderChart() {
-        const container = document.getElementById('weeklyChart');
-        if (!container) return;
-
-        // Build chart data
-        const today = new Date().getDay();
-        const dayNames = [];
-        for (let i = 6; i >= 0; i--) {
-            dayNames.push(DAYS[(today - i + 7) % 7]);
-        }
-
-        let maxVal = 0;
-        const vals = dayNames.map(d => {
-            const v = clickData[d] || 0;
-            if (v > maxVal) maxVal = v;
-            return v;
-        });
-        if (maxVal === 0) maxVal = 1;
-
-        let html = '';
-        dayNames.forEach((d, i) => {
-            const h = Math.max(4, (vals[i] / maxVal) * 130);
-            html += `<div class="bar-wrap">
-                <div class="bar-value">${vals[i]}</div>
-                <div class="bar" style="height:${h}px;" onclick="showToast('${d}: ${vals[i]} clicks','info')"></div>
-                <div class="bar-label">${d.slice(0,3)}</div>
-            </div>`;
-        });
-        container.innerHTML = html;
-    }
-
-    // ========================
-    // LINKS TABLE
-    // ========================
-    function renderLinksTable() {
-        const body = document.getElementById('linksTableBody');
-        if (savedLinks.length === 0) {
-            body.innerHTML = `<div class="empty-state"><i class="fas fa-link"></i><p>No links yet. Shorten your first link above!</p></div>`;
-            return;
-        }
-
-        let html = '';
-        savedLinks.forEach(link => {
-            html += `<div class="table-row">
-                <div class="tr-link">zeus.link/${link.slug}</div>
-                <div class="tr-original" title="${link.original}">${link.original.length > 35 ? link.original.slice(0,35) + '...' : link.original}</div>
-                <div class="tr-clicks">${link.clicks}</div>
-                <div class="tr-unique">${link.unique}</div>
-                <div class="tr-country">${link.country}</div>
-                <div class="tr-delete">
-                    <button onclick="deleteLink(${link.id})"><i class="fas fa-trash"></i></button>
-                    <button onclick="simulateClick('${link.slug}')" title="Simulate Click" style="border-color:rgba(247,201,72,0.2);color:#f7c948;margin-left:4px;"><i class="fas fa-plus"></i></button>
-                </div>
-            </div>`;
-        });
-        body.innerHTML = html;
-    }
-
-    function deleteLink(id) {
-        savedLinks = savedLinks.filter(l => l.id !== id);
-        localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
-        updateHeroStats();
-        updateOverview();
-        renderLinksTable();
-        renderQRList();
-        showToast('Link deleted.', 'info');
-    }
-
-    // ========================
-    // QR CODES
-    // ========================
-    function renderQRList() {
-        const body = document.getElementById('qrListBody');
-        const qrLinks = savedLinks.filter(l => l.qr);
-
-        if (qrLinks.length === 0) {
-            body.innerHTML = `<div class="empty-state"><i class="fas fa-qrcode"></i><p>No QR codes yet. Shorten a link with QR generation enabled.</p></div>`;
-            return;
-        }
-
-        let html = '';
-        qrLinks.forEach(link => {
-            const qrUrl = 'https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=' + encodeURIComponent('https://zeus.link/' + link.slug) + '&choe=UTF-8';
-            html += `<div class="table-row">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <img src="${qrUrl}" alt="QR" style="width:50px;height:50px;border-radius:8px;background:#fff;padding:4px;">
-                    <span class="tr-link">zeus.link/${link.slug}</span>
-                </div>
-                <div class="tr-original" title="${link.original}">${link.original.length > 30 ? link.original.slice(0,30) + '...' : link.original}</div>
-                <div class="tr-clicks">${link.clicks}</div>
-                <div class="tr-unique">${link.unique}</div>
-                <div colspan="2" style="display:flex;gap:6px;">
-                    <button onclick="window.open('${qrUrl}', '_blank')" style="background:none;border:1px solid rgba(247,201,72,0.2);border-radius:6px;color:#f7c948;padding:4px 10px;font-size:0.7rem;cursor:pointer;">Download</button>
-                    <button onclick="deleteLink(${link.id})" style="background:none;border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#ef4444;padding:4px 10px;font-size:0.7rem;cursor:pointer;"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>`;
-        });
-        body.innerHTML = html;
-    }
-
-    // ========================
-    // PREMIUM
-    // ========================
-    function redeemPremiumCode() {
-        const input = document.getElementById('premiumCodeInput');
-        const msg = document.getElementById('premiumCodeMsg');
-        const code = input.value.trim();
-
-        if (code === '123000') {
-            premiumUnlocked = true;
-            localStorage.setItem('zeusPremium', 'true');
-            msg.className = 'premium-code-msg success';
-            msg.innerHTML = '<i class="fas fa-check-circle"></i> Premium Unlocked! Unlimited links, custom aliases & full analytics.';
-            showToast('🎉 ZEUS LINKS Premium Activated!', 'success');
-            input.value = '';
-            updateHeroStats();
-            updateOverview();
-            renderLinksTable();
-            renderQRList();
-            setTimeout(() => msg.innerHTML = '', 5000);
-        } else if (code === '') {
-            msg.className = 'premium-code-msg error';
-            msg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a premium code.';
-        } else {
-            msg.className = 'premium-code-msg error';
-            msg.innerHTML = '<i class="fas fa-times-circle"></i> Invalid code. Contact Zeus on WhatsApp.';
-        }
-        setTimeout(() => { if (!msg.classList.contains('success')) msg.innerHTML = ''; }, 4000);
-    }
-
-    document.getElementById('premiumCodeInput').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') redeemPremiumCode();
-    });
-
-    // ========================
-    // TOAST
-    // ========================
-    function showToast(msg, type = 'info') {
-        const toast = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        toast.className = `toast ${type}`;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3200);
-    }
-
-    // ========================
-    // DEMO SEED DATA
-    // ========================
-    function seedDemoData() {
-        if (savedLinks.length === 0) {
-            const now = new Date();
-            const sampleLinks = [
-                { original: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', slug: 'abc123', country: 'USA', device: 'Mobile' },
-                { original: 'https://github.com/zeus/awesome-project', slug: 'github1', country: 'Nigeria', device: 'Desktop' },
-                { original: 'https://www.instagram.com/p/example', slug: 'insta99', country: 'UK', device: 'Mobile' },
-                { original: 'https://twitter.com/zeus/status/12345', slug: 'twt123', country: 'Canada', device: 'Desktop' }
-            ];
-
-            sampleLinks.forEach((s, i) => {
-                const clicks = Math.floor(Math.random() * 15) + 3;
-                const unique = Math.floor(clicks * (0.5 + Math.random() * 0.3));
-                const link = {
-                    id: Date.now() + i,
-                    slug: s.slug,
-                    original: s.original,
-                    short: 'zeus.link/' + s.slug,
-                    created: new Date(now.getTime() - i * 86400000).toISOString(),
-                    clicks: clicks,
-                    unique: unique,
-                    country: s.country,
-                    device: s.device,
-                    qr: true
-                };
-                savedLinks.push(link);
-            });
-            localStorage.setItem('zeusLinks', JSON.stringify(savedLinks));
-
-            // Seed weekly data
-            DAYS.forEach(d => {
-                clickData[d] = Math.floor(Math.random() * 8) + 1;
-            });
-            localStorage.setItem('zeusClickData', JSON.stringify(clickData));
-        }
-    }
-
-    seedDemoData();
-
-    // ========================
-    // INIT
-    // ========================
-    updateHeroStats();
-    updateOverview();
-    renderLinksTable();
-    renderQRList();
-
-    console.log('%c🔗 ZEUS LINKS ACTIVATED', 'font-size:28px;font-weight:bold;color:#f7c948;');
-    console.log('%cPremium Code: 123000', 'font-size:16px;color:#888;');
-    console.log('%cOwner: Zeus | +234 906 676 0078', 'font-size:14px;color:#aaa;');
+  });
 </script>
+
 </body>
 </html>
